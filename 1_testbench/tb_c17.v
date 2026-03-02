@@ -1,5 +1,3 @@
-timescale 1ns / 1ps
-
 module tb_c17();
   reg N1,N2,N3,N6,N7;
   wire N22,N23;

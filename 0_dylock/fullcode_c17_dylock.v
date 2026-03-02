@@ -76,35 +76,31 @@ module dylock_16 ( dynamic_K, static_K, clk, rst_n, static_TK, set );
     
   assign set = (count == 4'd12);
   assign static_TK = static_K;  
-endmodule
+endmodule	  
 
-module c17_locked (
-    input N1, N2, N3, N6, N7,
-    output N22, N23,
-    input set,       
-    input [3:0] static_TK 
-  );
+module c17_locked ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
+  input N1,N2,N3,N6,N7;
+  output N22,N23;
 
-  wire N10, N11, N16, N19;
-  wire N10_raw, N11_raw, N16_raw, N19_raw, N22_raw, N23_raw;
+  wire N10,N11,N16,N19;
 
-  nand NAND2_1 (N10_raw, N1, N3);
-  nand NAND2_2 (N11_raw, N3, N6);
-    
-  assign N10 = N10_raw ^ (~set); 
-  assign N11 = N11_raw ^ static_TK[0];
+  input set;
+  input [3:0] static_TK;
+  
+  wire N11_locked, N6_locked, N7_locked;
+  
+  xor static_lock_0 (N6_locked, N6, static_TK[0]);
+  nand NAND2_1 (N10, N1, N3);
+  nand NAND2_2 (N11, N3, N6_locked);
+  
+  xor dynamic_lock (N11_locked, N11, ~set);
+  nand NAND2_3 (N16, N2, N11_locked);
 
-  nand NAND2_3 (N16_raw, N2, N11);
-  nand NAND2_4 (N19_raw, N11, N7);
-
-  assign N16 = N16_raw ^ static_TK[1];
-  assign N19 = N19_raw ^ static_TK[2];
-
-  nand NAND2_5 (N22_raw, N10, N16);
-  nand NAND2_6 (N23_raw, N16, N19);
-
-  assign N22 = N22_raw ^ static_TK[3];
-  assign N23 = N23_raw;
+  xor static_lock_1 (N7_locked, N7, static_TK[1]);
+  nand NAND2_4 (N19, N11_locked, N7_locked);
+  
+  nand NAND2_5 (N22, N10, N16);
+  nand NAND2_6 (N23, N16, N19);
 endmodule
 
 module top_module (
@@ -118,7 +114,7 @@ module top_module (
 
   wire set;
   wire [3:0] static_TK;
-  dylock dylock_inst (
+  dylock_16 dylock_inst (
     .dynamic_K (dynamic_K),
     .static_K (static_K),
     .clk (clk),
