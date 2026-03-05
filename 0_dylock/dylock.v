@@ -10,7 +10,7 @@ module nonlinear_gen ( K, TK );
   assign TK[1] =  (K[0] & K[2] & K[3]) | 
                   (K[0] & K[3] & ~K[1]) | 
                   (K[1] & ~K[0] & ~K[2]) | 
-                  (K[1] & ~K[2] & K[3]) | 
+                  (K[1] & ~K[2] & ~K[3]) | 
                   (K[2] & ~K[0] & ~K[1]);
 
   assign TK[2] =  (K[0] & K[2] & K[3]) | 
@@ -20,8 +20,8 @@ module nonlinear_gen ( K, TK );
 
   assign TK[3] =  (K[0] & K[2] & ~K[1]) | 
                   (K[0] & K[3] & ~K[1]) | 
-                  (K[1] & ~K[2] & ~K[0]) | 
-                  (K[1] & ~K[3] & ~K[0]) | 
+                  (K[1] & K[2] & ~K[0]) | 
+                  (K[1] & K[3] & ~K[0]) | 
                   (K[0] & K[1] & ~K[2] & ~K[3]) | 
                   (~K[0] & ~K[1] & ~K[2] & ~K[3]);		
 endmodule
@@ -49,7 +49,7 @@ module dylock_16 ( dynamic_K, static_K, clk, rst_n, static_TK, set );
   output        set;
 
   wire [11:0] dynamic_TK;
-  localparam [11:0] DYNAMIC_KEY = 12'b1001_1001_1001; 
+  localparam [11:0] DYNAMIC_KEY = 12'h0; 
     
   nonlinear_gen_12 keygen (
       .dynamic_K(dynamic_K),

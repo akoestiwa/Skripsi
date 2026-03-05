@@ -1,13 +1,13 @@
 module tb_c17_locked();
   reg N1,N2,N3,N6,N7;
-  reg [3:0]  insert_key_static = 4'b0000;
-  reg [11:0] insert_key_dynamic = 12'b1001_1001_1001;
+  reg [3:0]  insert_key_static = 4'b1001;
+  reg [11:0] insert_key_dynamic = 12'b1011_1011_1011;
   reg clk, rst_n;
 
   wire N22,N23;
   integer i;
 
-  top_module uut (
+  c17_locked uut (
     .N1(N1), 
     .N2(N2), 
     .N3(N3), 
@@ -29,7 +29,7 @@ module tb_c17_locked();
     clk = 0;
     rst_n = 0;
 
-    insert_key_static = 4'b0000;
+    insert_key_static = 4'b1001;
     insert_key_dynamic = 12'b1001_1001_1001;
     {N1, N2, N3, N6, N7} = 5'b00000;
 
@@ -41,7 +41,7 @@ module tb_c17_locked();
       {N1, N2, N3, N6, N7} = i; 
       #10;
     end
+	$finish;
   end
-
-  $finish;
+  
 endmodule

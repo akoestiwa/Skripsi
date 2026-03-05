@@ -10,7 +10,7 @@ module nonlinear_gen ( K, TK );
   assign TK[1] =  (K[0] & K[2] & K[3]) | 
                   (K[0] & K[3] & ~K[1]) | 
                   (K[1] & ~K[0] & ~K[2]) | 
-                  (K[1] & ~K[2] & K[3]) | 
+                  (K[1] & ~K[2] & ~K[3]) | 
                   (K[2] & ~K[0] & ~K[1]);
 
   assign TK[2] =  (K[0] & K[2] & K[3]) | 
@@ -20,14 +20,14 @@ module nonlinear_gen ( K, TK );
 
   assign TK[3] =  (K[0] & K[2] & ~K[1]) | 
                   (K[0] & K[3] & ~K[1]) | 
-                  (K[1] & ~K[2] & ~K[0]) | 
-                  (K[1] & ~K[3] & ~K[0]) | 
+                  (K[1] & K[2] & ~K[0]) | 
+                  (K[1] & K[3] & ~K[0]) | 
                   (K[0] & K[1] & ~K[2] & ~K[3]) | 
                   (~K[0] & ~K[1] & ~K[2] & ~K[3]);		
 endmodule
 
 module nonlinear_gen_12 ( dynamic_K, dynamic_TK );
-  input [11:0] dynamic_K;
+	input [11:0] dynamic_K;
 	output [11:0] dynamic_TK;
 
 	genvar i;
@@ -49,7 +49,7 @@ module dylock_16 ( dynamic_K, static_K, clk, rst_n, static_TK, set );
   output        set;
 
   wire [11:0] dynamic_TK;
-  localparam [11:0] DYNAMIC_KEY = 12'b1001_1001_1001; 
+  localparam [11:0] DYNAMIC_KEY = 12'h0; 
     
   nonlinear_gen_12 keygen (
       .dynamic_K(dynamic_K),
@@ -76,7 +76,7 @@ module dylock_16 ( dynamic_K, static_K, clk, rst_n, static_TK, set );
     
   assign set = (count == 4'd12);
   assign static_TK = static_K;  
-endmodule	  
+endmodule
 
 module c17_locked ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
   input N1,N2,N3,N6,N7;
@@ -86,24 +86,24 @@ module c17_locked ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
 
   input set;
   input [3:0] static_TK;
+
+  wire N11_locked, N6_locked, N7_locked, N16_locked, N19_locked;
   
-  wire N11_locked, N6_locked, N7_locked;
-  
-  xor static_lock_0 (N6_locked, N6, static_TK[0]);
   nand NAND2_1 (N10, N1, N3);
   nand NAND2_2 (N11, N3, N6_locked);
-  
-  xor dynamic_lock (N11_locked, N11, ~set);
   nand NAND2_3 (N16, N2, N11_locked);
-
-  xor static_lock_1 (N7_locked, N7, static_TK[1]);
   nand NAND2_4 (N19, N11_locked, N7_locked);
-  
-  nand NAND2_5 (N22, N10, N16);
-  nand NAND2_6 (N23, N16, N19);
+  nand NAND2_5 (N22, N10, N16_locked);
+  nand NAND2_6 (N23, N16_locked, N19_locked);
+
+  xor static_lock_0 (N6_locked, N6, ~static_TK[0]);
+  xor static_lock_1 (N7_locked, N7, static_TK[1]);
+  xor static_lock_2 (N16_locked, N16, static_TK[2]);
+  xor static_lock_3 (N19_locked, N19, ~static_TK[3]);
+  xor dynamic_lock (N11_locked, N11, ~set);
 endmodule
 
-module top_module (
+module test (
     input N1, N2, N3, N6, N7,
     output N22, N23,
 

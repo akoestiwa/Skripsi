@@ -7,20 +7,21 @@ module c17_locked ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
   input set;
   input [3:0] static_TK;
 
-  wire N11_locked, N6_locked, N7_locked;
+  wire N11_locked, N6_locked, N7_locked, N16_locked, N19_locked;
   
-  xor static_lock_0 (N6_locked, N6, static_TK[1:0]);
+  
   nand NAND2_1 (N10, N1, N3);
   nand NAND2_2 (N11, N3, N6_locked);
-  
-  xor dynamic_lock (N11_locked, N11, ~set);
   nand NAND2_3 (N16, N2, N11_locked);
-
-  xor static_lock_1 (N7_locked, N7, static_TK[3:2]);
   nand NAND2_4 (N19, N11_locked, N7_locked);
-  
-  nand NAND2_5 (N22, N10, N16);
-  nand NAND2_6 (N23, N16, N19);
+  nand NAND2_5 (N22, N10, N16_locked);
+  nand NAND2_6 (N23, N16_locked, N19_locked);
+
+  xor static_lock_0 (N6_locked, N6, ~static_TK[0]);
+  xor static_lock_1 (N7_locked, N7, static_TK[1]);
+  xor static_lock_2 (N16_locked, N16, static_TK[2]);
+  xor static_lock_3 (N19_locked, N19, ~static_TK[3]);
+  xor dynamic_lock (N11_locked, N11, ~set);
 endmodule
 
 module top_module (
@@ -62,12 +63,12 @@ Node ID  | Type   | CC0   | CC1   | CO
 1        | PI     | 1     | 1     | 5    
 2        | PI     | 1     | 1     | 6    
 3        | PI     | 1     | 1     | 5    
-6        | PI     | 1     | 1     | 7       static[2] & static[3]
-7        | PI     | 1     | 1     | 6       static[0] & static[1]
+6        | PI     | 1     | 1     | 7       static[0] 
+7        | PI     | 1     | 1     | 6       static[1]
 10       | NAND   | 3     | 2     | 3       
 11       | NAND   | 3     | 2     | 5       dynamic 
-16       | NAND   | 4     | 2     | 3    
-19       | NAND   | 4     | 2     | 3    
+16       | NAND   | 4     | 2     | 3       static[2]
+19       | NAND   | 4     | 2     | 3       static[3]
 22       | NAND   | 5     | 4     | 0    
 23       | NAND   | 5     | 5     | 0    
 */
