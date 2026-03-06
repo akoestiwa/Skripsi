@@ -24,18 +24,15 @@ module tb_c6288();
   );
 
   initial begin
-    my_seed = 12345;
+    my_seed = 12345; 
     
-    all_inputs = 32'h0000_0000;
-    #10;
-
-    all_inputs = $random(my_seed);
-    #10;
-
-    all_inputs = 32'hAAAA_AAAA;
-    #10;
-
-    all_inputs = 32'hFFFF_FFFF;
-    #10;
+    all_inputs = 32'h0; #10;
+    all_inputs = 32'hFFFF_FFFF; #10;
+    all_inputs = 32'hAAAA_AAAA; #10;
+    
+    for (i = 0; i < 97; i = i + 1) begin
+      all_inputs = { $random(my_seed), $random(my_seed) } & 32'hFFFF_FFFF;
+      #10;
+    end
   end
 endmodule

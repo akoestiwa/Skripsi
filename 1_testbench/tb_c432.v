@@ -21,16 +21,14 @@ module tb_c432();
   initial begin  
     my_seed = 12345; 
     
-    all_inputs = 36'h0;
-    #10
-  
-    all_inputs = {$random(my_seed), $random(my_seed)} & 36'hFFFF_FFFF_F; 
-    #10;
+    all_inputs = 36'h0; #10;
+    all_inputs = 36'hAAAA_AAAA_A; #10;
+    all_inputs = 36'hFFFF_FFFF_F; #10;
     
-    all_inputs = 36'hAAAA_AAAA_A;
-    #10;
-
-    all_inputs = 36'hFFFF_FFFF_F;
-    #10;
+    for (i=0; i<97; i=i+1) begin
+      all_inputs = { $random(my_seed), $random(my_seed) } & { 36{1'b1} };
+      #10;
+    end
+    
   end
 endmodule

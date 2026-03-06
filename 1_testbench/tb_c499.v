@@ -26,18 +26,16 @@ module tb_c499();
     .N752(all_outputs[28]), .N753(all_outputs[29]), .N754(all_outputs[30]), .N755(all_outputs[31])
   );
 
-  initial begin
-    my_seed = 12345;
-    all_inputs = {41{1'b0}};
-    #10;
-
-    all_inputs = {$random(my_seed), $random(my_seed)} & {41{1'b1}};
-    #10;
-
-    all_inputs = 41'hAAAA_AAAA_AA;
-    #10;
-
-    all_inputs = {41{1'b1}};
-    #10;
+  initial begin  
+    my_seed = 12345; 
+    
+    all_inputs = 41'h0; #10;
+    all_inputs = 41'hAAAA_AAAA_AA; #10;
+    all_inputs = ( 41{1'b1} ); #10;
+    
+    for (i=0; i<97; i=i+1) begin
+      all_inputs = { $random(my_seed), $random(my_seed) } & { 41{1'b1} };
+      #10;
+    end
   end
 endmodule

@@ -23,19 +23,16 @@ module tb_c1908();
     .N2899(all_outputs[24])
   );
 
-  initial begin  
-    my_seed = 12345;
+  initial begin
+    my_seed = 12345; 
     
-    all_inputs = 33'h0;
-    #10;
-  
-    all_inputs = {$random(my_seed), $random(my_seed)} & 33'h1_FFFF_FFFF; 
-    #10;
+    all_inputs = 33'h0; #10;
+    all_inputs = 33'h1_FFFF_FFFF; #10;
+    all_inputs = 33'hAAAA_AAAA; #10;
     
-    all_inputs = 33'h1_AAAA_AAAA;
-    #10;
-
-    all_inputs = 33'h1_FFFF_FFFF;
-    #10;
+    for (i = 0; i < 97; i = i + 1) begin
+      all_inputs = { $random(my_seed), $random(my_seed) } & 33'h1_FFFF_FFFF;
+      #10;
+    end
   end
 endmodule
