@@ -29,6 +29,5 @@ module tb_c432();
       all_inputs = { $random(my_seed), $random(my_seed) } & { 36{1'b1} };
       #10;
     end
-    
   end
-endmodule
+  endmodule

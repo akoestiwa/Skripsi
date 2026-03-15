@@ -1,4 +1,4 @@
-module c17_locked ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
+module c17_locked_8 ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
   input N1,N2,N3,N6,N7;
   output N22,N23;
 
@@ -9,7 +9,6 @@ module c17_locked ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
 
   wire N11_locked, N6_locked, N7_locked, N16_locked, N19_locked;
   
-  
   nand NAND2_1 (N10, N1, N3);
   nand NAND2_2 (N11, N3, N6_locked);
   nand NAND2_3 (N16, N2, N11_locked);
@@ -17,6 +16,7 @@ module c17_locked ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
   nand NAND2_5 (N22, N10, N16_locked);
   nand NAND2_6 (N23, N16_locked, N19_locked);
 
+  // static_K = static_TK = 1001
   xor static_lock_0 (N6_locked, N6, ~static_TK[0]);
   xor static_lock_1 (N7_locked, N7, static_TK[1]);
   xor static_lock_2 (N16_locked, N16, static_TK[2]);
@@ -28,23 +28,24 @@ module top_module (
     input N1, N2, N3, N6, N7,
     output N22, N23,
 
-    input [3:0] static_K, 
-    input [11:0]  dynamic_K,
-    input         clk, rst_n
+    input [3:0] static_K, dynamic_K, key,
+    input       clk, rst_n
   );
 
   wire set;
   wire [3:0] static_TK;
-  dylock_16 dylock_inst (
+
+  dylock_8 dylock_inst (
     .dynamic_K (dynamic_K),
     .static_K (static_K),
+    .key (key),
     .clk (clk),
     .rst_n (rst_n),
     .static_TK (static_TK),
     .set (set)
   );
 
-  c17_locked c17_locked_inst (
+  c17_locked_8 c17_locked_inst (
     .N1 (N1), 
     .N2 (N2),
     .N3 (N3),
