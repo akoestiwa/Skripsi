@@ -1,4 +1,4 @@
-module c17_locked_8 ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
+module c17_locked ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
   input N1,N2,N3,N6,N7;
   output N22,N23;
 

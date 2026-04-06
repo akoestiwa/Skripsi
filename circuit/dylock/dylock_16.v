@@ -36,7 +36,7 @@ module dylock ( K, key, clk, rst_n, set );
    
   nonlinear_gen keygen (
       .K(K),
-	   .TK(TK)
+	    .TK(TK)
   );
     
   always @(posedge clk or negedge rst_n) begin
@@ -54,27 +54,7 @@ module dylock ( K, key, clk, rst_n, set );
           count <= 4'd0; 
 			end
   end
-    
   assign set = (count == 4'd12);
-endmodule
-
-module dylock_8 ( static_K, dynamic_K, key, clk, rst_n, static_TK, set);
-  input   [3:0] static_K, dynamic_K, key;
-  input         clk, rst_n;
-  output  [3:0] static_TK;
-  output        set;
-
-  wire    [3:0] dynamic_TK;
-
-  dylock dylock_inst (
-    .K (dynamic_K),
-    .key (key),
-    .clk (clk),
-    .rst_n (rst_n),
-    .set (set)
-  );
-
-  assign static_TK = static_K;
 endmodule
 
 module dylock_16 ( static_K, dynamic_K, key, clk, rst_n, static_TK, set);
