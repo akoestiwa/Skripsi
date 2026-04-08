@@ -93,7 +93,7 @@ Node ID  | Type   | CC0          | CC1          | CO
 317      | AND    | 2            | 3            | 29          
 318      | AND    | 2            | 3            | 29          
 319      | NAND   | 3            | 2            | 38          
-322      | NOR    | 2            | 3            | 45 [TOP]    
+322      | NOR    | 2            | 3            | 45 [TOP]    ~static[0]
 323      | AND    | 2            | 3            | 45 [TOP]    
 324      | NAND   | 3            | 2            | 36          
 325      | OR     | 3            | 2            | 36          
@@ -249,7 +249,7 @@ Node ID  | Type   | CC0          | CC1          | CO
 547      | NAND   | 5            | 13           | 16          
 550      | NOT    | 14           | 6            | 15          
 551      | NOT    | 14           | 6            | 15          
-552      | AND    | 6            | 27 [TOP]     | 17          
+552      | AND    | 6            | 27 [TOP]     | 17          ~set[0]
 553      | NAND   | 12           | 5            | 19          
 557      | NAND   | 12           | 5            | 19          
 561      | NAND   | 12           | 5            | 19          
@@ -260,7 +260,7 @@ Node ID  | Type   | CC0          | CC1          | CO
 581      | NAND   | 9            | 6            | 21          
 585      | NOT    | 14           | 6            | 15          
 586      | NOT    | 14           | 6            | 15          
-587      | AND    | 6            | 27 [TOP]     | 17          
+587      | AND    | 6            | 27 [TOP]     | 17          ~set[1]
 588      | AND    | 15           | 13           | 8           
 589      | AND    | 15           | 13           | 8           
 590      | NAND   | 7            | 2            | 20          
@@ -287,7 +287,7 @@ Node ID  | Type   | CC0          | CC1          | CO
 651      | NAND   | 8            | 2            | 22          
 654      | OR     | 11           | 2            | 24          
 659      | AND    | 2            | 8            | 19          
-660      | NOR    | 14           | 22 [TOP]     | 1           
+660      | NOR    | 14           | 22 [TOP]     | 1           ~set[2]
 661      | NOR    | 14           | 22 [TOP]     | 1           
 662      | NOT    | 3            | 8            | 19          
 665      | AND    | 8            | 5            | 19          
@@ -314,7 +314,7 @@ Node ID  | Type   | CC0          | CC1          | CO
 727      | AND    | 9            | 5            | 21          
 731      | NOR    | 4            | 5            | 16          
 732      | NAND   | 4            | 2            | 39          
-733      | NAND   | 6            | 2            | 43 [TOP]    
+733      | NAND   | 6            | 2            | 43 [TOP]    ~static[1]
 734      | NAND   | 8            | 2            | 45 [TOP]    
 735      | NOT    | 9            | 4            | 18          
 736      | AND    | 2            | 7            | 17          
@@ -322,10 +322,10 @@ Node ID  | Type   | CC0          | CC1          | CO
 738      | NOT    | 9            | 4            | 34          
 739      | AND    | 2            | 7            | 17          
 740      | AND    | 2            | 10           | 17          
-741      | NOT    | 9            | 4            | 52 [TOP]    
+741      | NOT    | 9            | 4            | 52 [TOP]    ~static[2]
 742      | AND    | 2            | 7            | 17          
 743      | AND    | 2            | 10           | 17          
-744      | NOT    | 9            | 4            | 48 [TOP]    
+744      | NOT    | 9            | 4            | 48 [TOP]    ~static[3]
 745      | AND    | 2            | 7            | 17          
 746      | AND    | 2            | 10           | 17          
 747      | NOT    | 10           | 4            | 43 [TOP]    

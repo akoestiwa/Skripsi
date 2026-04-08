@@ -1,10 +1,7 @@
-`timescale 1ns / 1ps
-
 module tb_c3540();
   reg [49:0] all_inputs;
   wire [21:0] all_outputs;
-  
-  integer i, my_seed;
+  integer i,file_handle, my_seed;
 
   c3540 uut (
     .N1(all_inputs[0]),     .N13(all_inputs[1]),    .N20(all_inputs[2]),    .N33(all_inputs[3]),
@@ -29,16 +26,33 @@ module tb_c3540();
     .N5360(all_outputs[20]),.N5361(all_outputs[21])
   );
 
-  initial begin
-    my_seed = 12345;
-    
-    all_inputs = 50'h0; #10;
-    all_inputs = 50'h2AAAAAAAAAAAA; #10;
-    all_inputs = 50'h3FFFFFFFFFFFF; #10;
+  initial begin  
+    file_handle = $fopen("hasil_c3540.txt","w");
+    if (file_handle == 0) begin
+      $display("error: file tidak bisa dibuka!");
+      $finish;
+    end
 
-    for (i = 0; i < 97; i = i + 1) begin
-      all_inputs = { $random(my_seed), $random(my_seed) } & 50'h3FFFFFFFFFFFF;
-      #20;
+    $fdisplay(file_handle, "Waktu | Input | Output");
+    $fdisplay(file_handle, "-----------------------------");
+    my_seed = 12345; 
+    
+    all_inputs = 50'h0; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = { 25{2'b10} };
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = { 50{1'b1} }; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+    
+    for (i=0; i<61; i=i+1) begin
+      all_inputs = { $random(my_seed), $random(my_seed) } & { 50{1'b1} };
+      $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+      #10;
     end
   end
 endmodule

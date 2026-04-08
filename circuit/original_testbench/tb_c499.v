@@ -1,7 +1,7 @@
 module tb_c499();
   reg [40:0] all_inputs;
   wire [31:0] all_outputs;
-  integer i, my_seed;
+  integer i,file_handle, my_seed;
 
   c499 uut (
     .N1(all_inputs[0]),   .N5(all_inputs[1]),   .N9(all_inputs[2]),   .N13(all_inputs[3]),
@@ -27,14 +27,31 @@ module tb_c499();
   );
 
   initial begin  
+    file_handle = $fopen("hasil_499.txt","w");
+    if (file_handle == 0) begin
+      $display("error: file tidak bisa dibuka!");
+      $finish;
+    end
+
+    $fdisplay(file_handle, "Waktu | Input | Output");
+    $fdisplay(file_handle, "-----------------------------");
     my_seed = 12345; 
     
-    all_inputs = 41'h0; #10;
-    all_inputs = 41'hAAAA_AAAA_AA; #10;
-    all_inputs = ( 41{1'b1} ); #10;
+    all_inputs = 41'h0; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = 41'hAAAA_AAAA_AA1;
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = { 41{1'b1} }; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
     
-    for (i=0; i<97; i=i+1) begin
+    for (i=0; i<61; i=i+1) begin
       all_inputs = { $random(my_seed), $random(my_seed) } & { 41{1'b1} };
+      $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
       #10;
     end
   end

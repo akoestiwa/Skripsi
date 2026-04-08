@@ -49,20 +49,20 @@ Node ID  | Type   | CC0          | CC1          | CO
 257      | AND    | 2            | 3            | 329         
 260      | AND    | 2            | 3            | 329         
 263      | AND    | 2            | 3            | 329         
-266      | NAND   | 3            | 2            | 351 [TOP]   
+266      | NAND   | 3            | 2            | 351 [TOP]     ~static[0]
 269      | NAND   | 3            | 2            | 351 [TOP]   
 272      | NAND   | 3            | 2            | 351 [TOP]   
 275      | NAND   | 3            | 2            | 351 [TOP]   
-278      | NAND   | 3            | 2            | 351 [TOP]   
+278      | NAND   | 3            | 2            | 351 [TOP]     ~static[1]
 281      | NAND   | 3            | 2            | 351 [TOP]   
 284      | NAND   | 3            | 2            | 351 [TOP]   
 287      | NAND   | 3            | 2            | 351 [TOP]   
-290      | NAND   | 3            | 2            | 351 [TOP]   
+290      | NAND   | 3            | 2            | 351 [TOP]     ~static[2]
 293      | NAND   | 3            | 2            | 351 [TOP]   
 296      | NAND   | 3            | 2            | 351 [TOP]   
 299      | NAND   | 3            | 2            | 351 [TOP]   
-302      | NAND   | 3            | 2            | 351 [TOP]   
-305      | NAND   | 3            | 2            | 351 [TOP]   
+302      | NAND   | 3            | 2            | 351 [TOP]     ~static[3]
+305      | NAND   | 3            | 2            | 351 [TOP]     
 308      | NAND   | 3            | 2            | 351 [TOP]   
 311      | NAND   | 3            | 2            | 351 [TOP]   
 314      | NAND   | 3            | 2            | 316         
@@ -395,14 +395,14 @@ Node ID  | Type   | CC0          | CC1          | CO
 1021     | AND    | 26           | 270          | 32          
 1026     | AND    | 26           | 270          | 32          
 1031     | AND    | 26           | 270          | 32          
-1036     | AND    | 27           | 295 [TOP]    | 7           
+1036     | AND    | 27           | 295 [TOP]    | 7             ~set[0]
 1039     | AND    | 27           | 295 [TOP]    | 7           
 1042     | AND    | 27           | 295 [TOP]    | 7           
 1045     | AND    | 27           | 295 [TOP]    | 7           
 1048     | AND    | 27           | 295 [TOP]    | 7           
 1051     | AND    | 27           | 295 [TOP]    | 7           
 1054     | AND    | 27           | 295 [TOP]    | 7           
-1057     | AND    | 27           | 295 [TOP]    | 7           
+1057     | AND    | 27           | 295 [TOP]    | 7             ~set[1]
 1060     | AND    | 27           | 295 [TOP]    | 7           
 1063     | AND    | 27           | 295 [TOP]    | 7           
 1066     | AND    | 27           | 295 [TOP]    | 7           
@@ -411,7 +411,7 @@ Node ID  | Type   | CC0          | CC1          | CO
 1075     | AND    | 27           | 295 [TOP]    | 7           
 1078     | AND    | 27           | 295 [TOP]    | 7           
 1081     | AND    | 27           | 295 [TOP]    | 7           
-1084     | AND    | 27           | 295 [TOP]    | 7           
+1084     | AND    | 27           | 295 [TOP]    | 7             ~set[2]
 1087     | AND    | 27           | 295 [TOP]    | 7           
 1090     | AND    | 27           | 295 [TOP]    | 7           
 1093     | AND    | 27           | 295 [TOP]    | 7           

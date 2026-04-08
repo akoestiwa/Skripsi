@@ -1,7 +1,7 @@
 module tb_c432();
   reg [35:0] all_inputs;
   wire [6:0] all_outputs;
-  integer i,my_seed;
+  integer i,file_handle, my_seed;
 
   c432 uut (
     .N1(all_inputs[0]),   .N4(all_inputs[1]),   .N8(all_inputs[2]),   .N11(all_inputs[3]),
@@ -19,14 +19,32 @@ module tb_c432();
   );
 
   initial begin  
+    file_handle = $fopen("hasil_432.txt","w");
+    if (file_handle == 0) begin
+      $display("error: file tidak bisa dibuka!");
+      $finish;
+    end
+
+    $fdisplay(file_handle, "Waktu | Input | Output");
+    $fdisplay(file_handle, "-----------------------------");
+    
     my_seed = 12345; 
     
-    all_inputs = 36'h0; #10;
-    all_inputs = 36'hAAAA_AAAA_A; #10;
-    all_inputs = 36'hFFFF_FFFF_F; #10;
+    all_inputs = 36'h0;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+    #10;
     
-    for (i=0; i<97; i=i+1) begin
+    all_inputs = 36'hAAAA_AAAA_A; 
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+    #10;
+
+    all_inputs = 36'hFFFF_FFFF_F; 
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+    #10;
+    
+    for (i=0; i<61; i=i+1) begin
       all_inputs = { $random(my_seed), $random(my_seed) } & { 36{1'b1} };
+      $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
       #10;
     end
   end

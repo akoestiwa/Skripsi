@@ -1,7 +1,7 @@
 module tb_c6288();
   reg [31:0] all_inputs;
   wire [31:0] all_outputs;
-  integer i, my_seed;
+  integer i,file_handle, my_seed;
 
   c6288 uut (
     .N1(all_inputs[0]),    .N18(all_inputs[1]),   .N35(all_inputs[2]),   .N52(all_inputs[3]),
@@ -23,15 +23,32 @@ module tb_c6288();
     .N6270(all_outputs[28]), .N6280(all_outputs[29]), .N6287(all_outputs[30]), .N6288(all_outputs[31])
   );
 
-  initial begin
+  initial begin  
+    file_handle = $fopen("hasil_c6288.txt","w");
+    if (file_handle == 0) begin
+      $display("error: file tidak bisa dibuka!");
+      $finish;
+    end
+
+    $fdisplay(file_handle, "Waktu | Input | Output");
+    $fdisplay(file_handle, "-----------------------------");
     my_seed = 12345; 
     
-    all_inputs = 32'h0; #10;
-    all_inputs = 32'hFFFF_FFFF; #10;
-    all_inputs = 32'hAAAA_AAAA; #10;
+    all_inputs = 32'h0; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = { 16{2'b10} };
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = { 32{1'b1} }; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
     
-    for (i = 0; i < 97; i = i + 1) begin
-      all_inputs = { $random(my_seed), $random(my_seed) } & 32'hFFFF_FFFF;
+    for (i=0; i<61; i=i+1) begin
+      all_inputs = { $random(my_seed), $random(my_seed) } & { 32{1'b1} };
+      $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
       #10;
     end
   end

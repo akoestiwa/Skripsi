@@ -1,7 +1,7 @@
 module tb_c1908();
-  reg [32:0]  all_inputs;
+  reg [32:0] all_inputs;
   wire [24:0] all_outputs;
-  integer i, my_seed;
+  integer i,file_handle, my_seed;
 
   c1908 uut (
     .N1(all_inputs[0]),    .N4(all_inputs[1]),    .N7(all_inputs[2]),    .N10(all_inputs[3]),
@@ -23,15 +23,32 @@ module tb_c1908();
     .N2899(all_outputs[24])
   );
 
-  initial begin
+  initial begin  
+    file_handle = $fopen("hasil_c1908.txt","w");
+    if (file_handle == 0) begin
+      $display("error: file tidak bisa dibuka!");
+      $finish;
+    end
+
+    $fdisplay(file_handle, "Waktu | Input | Output");
+    $fdisplay(file_handle, "-----------------------------");
     my_seed = 12345; 
     
-    all_inputs = 33'h0; #10;
-    all_inputs = 33'h1_FFFF_FFFF; #10;
-    all_inputs = 33'hAAAA_AAAA; #10;
+    all_inputs = 33'h0; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = 33'b1010_1010_1010_1010_1010_1010_1010_1010_1;
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = { 33{1'b1} }; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
     
-    for (i = 0; i < 97; i = i + 1) begin
-      all_inputs = { $random(my_seed), $random(my_seed) } & 33'h1_FFFF_FFFF;
+    for (i=0; i<61; i=i+1) begin
+      all_inputs = { $random(my_seed), $random(my_seed) } & { 33{1'b1} };
+      $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
       #10;
     end
   end

@@ -20,7 +20,7 @@ module tb_c17();
       $finish;
     end
 
-    $fdisplay(file_handle, "Waktu | Key (static_dynamic) | Input | Output");
+    $fdisplay(file_handle, "Waktu | Input | Output");
     $fdisplay(file_handle, "---------------------------------------------");
 
     {N1, N2, N3, N6, N7} = 5'b00000;
@@ -28,11 +28,9 @@ module tb_c17();
     for (i=0; i<32; i=i+1) begin
       {N1, N2, N3, N6, N7} = i; 
       #10;
-      $fdisplay(file_csv, "%0t,%b,%b,%b,%b,%b,%b,%b", $time, N1, N2, N3, N6, N7, N22, N23);
+      $fdisplay(file_handle, "%5t | %b%b%b%b%b%b | %b%b", $time, N1, N2, N3, N6, N7, N22, N23);
     end
 
-    $fdisplay(file_handle, "%5t | %b_%b | %b | %b", $time, insert_key_static, insert_key_dynamic, all_inputs, all_outputs);
-    
     $fclose(file_handle);
     $stop;
   end

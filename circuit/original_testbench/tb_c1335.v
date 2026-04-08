@@ -1,10 +1,9 @@
-module tb_c1355();
+module tb_c1335();
   reg [40:0] all_inputs;
   wire [31:0] all_outputs;
-  
-  integer i, my_seed;
+  integer i,file_handle, my_seed;
 
-  c1355 uut (
+  c1335 uut (
     .N1(all_inputs[0]),   .N8(all_inputs[1]),   .N15(all_inputs[2]),  .N22(all_inputs[3]),
     .N29(all_inputs[4]),  .N36(all_inputs[5]),  .N43(all_inputs[6]),  .N50(all_inputs[7]),
     .N57(all_inputs[8]),  .N64(all_inputs[9]),  .N71(all_inputs[10]), .N78(all_inputs[11]),
@@ -27,15 +26,32 @@ module tb_c1355();
     .N1352(all_outputs[28]),.N1353(all_outputs[29]),.N1354(all_outputs[30]),.N1355(all_outputs[31])
   );
 
-  initial begin
+  initial begin  
+    file_handle = $fopen("hasil_c1335.txt","w");
+    if (file_handle == 0) begin
+      $display("error: file tidak bisa dibuka!");
+      $finish;
+    end
+
+    $fdisplay(file_handle, "Waktu | Input | Output");
+    $fdisplay(file_handle, "-----------------------------");
     my_seed = 12345; 
     
-    all_inputs = 41'h0; #10;
-    all_inputs = 41'h1FFFFFFFFFF; #10;
-    all_inputs = 41'hAAAAAAAAAA; #10;
+    all_inputs = 41'h0; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = 41'b1010_1010_1010_1010_1010_1010_1010_1010_1010_1010_1;
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = { 41{1'b1} }; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
     
-    for (i = 0; i < 97; i = i + 1) begin
-      all_inputs = { $random(my_seed), $random(my_seed) } & 41'h1FFFFFFFFFF;
+    for (i=0; i<61; i=i+1) begin
+      all_inputs = { $random(my_seed), $random(my_seed) } & { 41{1'b1} };
+      $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
       #10;
     end
   end

@@ -1,8 +1,7 @@
 module tb_c2670();
   reg [232:0] all_inputs;
   wire [139:0] all_outputs;
-  
-  integer i, my_seed;
+  integer i,file_handle, my_seed;
 
   c2670 uut (
     .N1(all_inputs[0]),     .N2(all_inputs[1]),     .N3(all_inputs[2]),     .N4(all_inputs[3]),
@@ -102,19 +101,33 @@ module tb_c2670();
     .N215_O(all_outputs[136]),.N216_O(all_outputs[137]),.N217_O(all_outputs[138]),.N218_O(all_outputs[139])
   );
 
-  initial begin
-    my_seed = 12345;
-    
-    all_inputs = 233'h0; #10;
-    all_inputs = {233{1'b1}}; #10;
+  initial begin  
+    file_handle = $fopen("hasil_c2670.txt","w");
+    if (file_handle == 0) begin
+      $display("error: file tidak bisa dibuka!");
+      $finish;
+    end
 
-    for (i = 0; i < 97; i = i + 1) begin
-      all_inputs = { 
-        $random(my_seed), $random(my_seed), $random(my_seed), $random(my_seed),
-        $random(my_seed), $random(my_seed), $random(my_seed), $random(my_seed) 
-      } & {233{1'b1}};
+    $fdisplay(file_handle, "Waktu | Input | Output");
+    $fdisplay(file_handle, "-----------------------------");
+    my_seed = 12345; 
+    
+    all_inputs = 233'h0; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = { {116{2'b10}}, 1'b1 };
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+
+    all_inputs = { 233{1'b1} }; 
+    #10;
+    $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
+    
+    for (i=0; i<61; i=i+1) begin
+      all_inputs = { $random(my_seed), $random(my_seed) } & { 233{1'b1} };
+      $fdisplay(file_handle, "%5t | %b | %b", $time, all_inputs, all_outputs);
       #10;
     end
   end
-
 endmodule
