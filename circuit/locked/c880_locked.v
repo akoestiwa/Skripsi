@@ -1,3 +1,32 @@
+module top_c880_locked(
+    input [59:0] all_inputs,
+    output [25:0] all_outputs,
+    input [3:0]  static_K,
+    input [11:0] dynamic_K, key,
+    input        clk, rst_n
+  );
+  
+  wire [2:0] set;
+  wire [3:0] static_TK;
+
+  dylock_16 dylock_inst (
+    .dynamic_K (dynamic_K),
+    .static_K (static_K),
+    .key (key),
+    .clk (clk),
+    .rst_n (rst_n),
+    .static_TK (static_TK),
+    .set (set)
+  );
+
+  c880_locked c880_locked_inst (
+    .all_inputs (all_inputs),
+    .all_outputs (all_outputs),
+    .set (set),       
+    .static_TK (static_TK) 
+  );
+endmodule
+
 module nonlinear_gen ( K, TK );
   input   [3:0] K;
   output  [3:0] TK;
@@ -82,27 +111,112 @@ module dylock_16 ( static_K, dynamic_K, key, clk, rst_n, static_TK, set);
   assign static_TK = static_K;
 endmodule
 
-module c880_locked (N1,N8,N13,N17,N26,N29,N36,N42,N51,N55,
-             N59,N68,N72,N73,N74,N75,N80,N85,N86,N87,
-             N88,N89,N90,N91,N96,N101,N106,N111,N116,N121,
-             N126,N130,N135,N138,N143,N146,N149,N152,N153,N156,
-             N159,N165,N171,N177,N183,N189,N195,N201,N207,N210,
-             N219,N228,N237,N246,N255,N259,N260,N261,N267,N268,
-             N388,N389,N390,N391,N418,N419,N420,N421,N422,N423,
-             N446,N447,N448,N449,N450,N767,N768,N850,N863,N864,
-             N865,N866,N874,N878,N879,N880,set, static_TK);
+module c880_locked (all_inputs, all_outputs ,set, static_TK);
 
-  input N1,N8,N13,N17,N26,N29,N36,N42,N51,N55,
+  // input bus
+  input [59:0] all_inputs;
+  output [25:0] all_outputs;
+  
+  // input
+  wire  N1,N8,N13,N17,N26,N29,N36,N42,N51,N55,
         N59,N68,N72,N73,N74,N75,N80,N85,N86,N87,
         N88,N89,N90,N91,N96,N101,N106,N111,N116,N121,
         N126,N130,N135,N138,N143,N146,N149,N152,N153,N156,
         N159,N165,N171,N177,N183,N189,N195,N201,N207,N210,
         N219,N228,N237,N246,N255,N259,N260,N261,N267,N268;
+  assign N1   = all_inputs[0];
+  assign N8   = all_inputs[1];
+  assign N13  = all_inputs[2];
+  assign N17  = all_inputs[3];
+  assign N26  = all_inputs[4];
+  assign N29  = all_inputs[5];
+  assign N36  = all_inputs[6];
+  assign N42  = all_inputs[7];
+  assign N51  = all_inputs[8];
+  assign N55  = all_inputs[9];
+  assign N59  = all_inputs[10];
+  assign N68  = all_inputs[11];
+  assign N72  = all_inputs[12];
+  assign N73  = all_inputs[13];
+  assign N74  = all_inputs[14];
+  assign N75  = all_inputs[15];
+  assign N80  = all_inputs[16];
+  assign N85  = all_inputs[17];
+  assign N86  = all_inputs[18];
+  assign N87  = all_inputs[19];
+  assign N88  = all_inputs[20];
+  assign N89  = all_inputs[21];
+  assign N90  = all_inputs[22];
+  assign N91  = all_inputs[23];
+  assign N96  = all_inputs[24];
+  assign N101 = all_inputs[25];
+  assign N106 = all_inputs[26];
+  assign N111 = all_inputs[27];
+  assign N116 = all_inputs[28];
+  assign N121 = all_inputs[29];
+  assign N126 = all_inputs[30];
+  assign N130 = all_inputs[31];
+  assign N135 = all_inputs[32];
+  assign N138 = all_inputs[33];
+  assign N143 = all_inputs[34];
+  assign N146 = all_inputs[35];
+  assign N149 = all_inputs[36];
+  assign N152 = all_inputs[37];
+  assign N153 = all_inputs[38];
+  assign N156 = all_inputs[39];
+  assign N159 = all_inputs[40];
+  assign N165 = all_inputs[41];
+  assign N171 = all_inputs[42];
+  assign N177 = all_inputs[43];
+  assign N183 = all_inputs[44];
+  assign N189 = all_inputs[45];
+  assign N195 = all_inputs[46];
+  assign N201 = all_inputs[47];
+  assign N207 = all_inputs[48];
+  assign N210 = all_inputs[49];
+  assign N219 = all_inputs[50];
+  assign N228 = all_inputs[51];
+  assign N237 = all_inputs[52];
+  assign N246 = all_inputs[53];
+  assign N255 = all_inputs[54];
+  assign N259 = all_inputs[55];
+  assign N260 = all_inputs[56];
+  assign N261 = all_inputs[57];
+  assign N267 = all_inputs[58];
+  assign N268 = all_inputs[59];
 
-  output N388,N389,N390,N391,N418,N419,N420,N421,N422,N423,
+  // output
+  wire N388,N389,N390,N391,N418,N419,N420,N421,N422,N423,
          N446,N447,N448,N449,N450,N767,N768,N850,N863,N864,
          N865,N866,N874,N878,N879,N880;
+  assign all_outputs[0]  = N388;
+  assign all_outputs[1]  = N389;
+  assign all_outputs[2]  = N390;
+  assign all_outputs[3]  = N391;
+  assign all_outputs[4]  = N418;
+  assign all_outputs[5]  = N419;
+  assign all_outputs[6]  = N420;
+  assign all_outputs[7]  = N421;
+  assign all_outputs[8]  = N422;
+  assign all_outputs[9]  = N423;
+  assign all_outputs[10] = N446;
+  assign all_outputs[11] = N447;
+  assign all_outputs[12] = N448;
+  assign all_outputs[13] = N449;
+  assign all_outputs[14] = N450;
+  assign all_outputs[15] = N767;
+  assign all_outputs[16] = N768;
+  assign all_outputs[17] = N850;
+  assign all_outputs[18] = N863;
+  assign all_outputs[19] = N864;
+  assign all_outputs[20] = N865;
+  assign all_outputs[21] = N866;
+  assign all_outputs[22] = N874;
+  assign all_outputs[23] = N878;
+  assign all_outputs[24] = N879;
+  assign all_outputs[25] = N880;
 
+  // wire rangkaian
   wire N269,N270,N273,N276,N279,N280,N284,N285,N286,N287,
        N290,N291,N292,N293,N294,N295,N296,N297,N298,N301,
        N302,N303,N304,N305,N306,N307,N308,N309,N310,N316,
@@ -140,12 +254,14 @@ module c880_locked (N1,N8,N13,N17,N26,N29,N36,N42,N51,N55,
        N856,N857,N858,N859,N860,N861,N862,N867,N868,N869,
        N870,N871,N872,N873,N875,N876,N877;
 
-  // declare lock
+  // input dylock
   input [2:0] set;
   input [3:0] static_TK;
 
+  // wire kunci
   wire N322_locked, N733_locked, N741_locked, N744_locked, N552_locked, N587_locked, N660_locked;
 
+  // rangkaian c880
   nand NAND4_1 (N269, N1, N8, N13, N17);
   nand NAND4_2 (N270, N1, N26, N13, N17);
   and AND3_3 (N273, N29, N36, N42);
@@ -530,7 +646,7 @@ module c880_locked (N1,N8,N13,N17,N26,N29,N36,N42,N51,N55,
   buf BUFF1_382 (N879, N876);
   buf BUFF1_383 (N880, N877);
 
-  // static dynamic lock
+  // rangkaian kunci (static_K = static_TK = 1001)
   xor static_lock_0 (N322_locked, N322, ~static_TK[0]);
   xor static_lock_1 (N733_locked, N733, static_TK[1]);
   xor static_lock_2 (N741_locked, N741, static_TK[2]);
@@ -538,54 +654,4 @@ module c880_locked (N1,N8,N13,N17,N26,N29,N36,N42,N51,N55,
   xor dynamic_lock_0 (N552_locked, N552, ~set[0]);
   xor dynamic_lock_1 (N587_locked, N587, ~set[1]);
   xor dynamic_lock_2 (N660_locked, N660, ~set[2]);
-endmodule
-
-module top_c880_locked(
-    input [59:0] all_inputs,
-    output [25:0] all_outputs,
-    input [3:0]  static_K,
-    input [11:0] dynamic_K, key,
-    input        clk, rst_n
-  );
-  
-  wire [2:0] set;
-  wire [3:0] static_TK;
-
-  dylock_16 dylock_inst (
-    .dynamic_K (dynamic_K),
-    .static_K (static_K),
-    .key (key),
-    .clk (clk),
-    .rst_n (rst_n),
-    .static_TK (static_TK),
-    .set (set)
-  );
-
-  c880_locked c880_locked_inst (
-    .N1(all_inputs[0]),   .N8(all_inputs[1]),   .N13(all_inputs[2]),  .N17(all_inputs[3]),
-    .N26(all_inputs[4]),  .N29(all_inputs[5]),  .N36(all_inputs[6]),  .N42(all_inputs[7]),
-    .N51(all_inputs[8]),  .N55(all_inputs[9]),  .N59(all_inputs[10]), .N68(all_inputs[11]),
-    .N72(all_inputs[12]), .N73(all_inputs[13]), .N74(all_inputs[14]), .N75(all_inputs[15]),
-    .N80(all_inputs[16]), .N85(all_inputs[17]), .N86(all_inputs[18]), .N87(all_inputs[19]),
-    .N88(all_inputs[20]), .N89(all_inputs[21]), .N90(all_inputs[22]), .N91(all_inputs[23]),
-    .N96(all_inputs[24]), .N101(all_inputs[25]),.N106(all_inputs[26]),.N111(all_inputs[27]),
-    .N116(all_inputs[28]),.N121(all_inputs[29]),.N126(all_inputs[30]),.N130(all_inputs[31]),
-    .N135(all_inputs[32]),.N138(all_inputs[33]),.N143(all_inputs[34]),.N146(all_inputs[35]),
-    .N149(all_inputs[36]),.N152(all_inputs[37]),.N153(all_inputs[38]),.N156(all_inputs[39]),
-    .N159(all_inputs[40]),.N165(all_inputs[41]),.N171(all_inputs[42]),.N177(all_inputs[43]),
-    .N183(all_inputs[44]),.N189(all_inputs[45]),.N195(all_inputs[46]),.N201(all_inputs[47]),
-    .N207(all_inputs[48]),.N210(all_inputs[49]),.N219(all_inputs[50]),.N228(all_inputs[51]),
-    .N237(all_inputs[52]),.N246(all_inputs[53]),.N255(all_inputs[54]),.N259(all_inputs[55]),
-    .N260(all_inputs[56]),.N261(all_inputs[57]),.N267(all_inputs[58]),.N268(all_inputs[59]),
-
-    .N388(all_outputs[0]), .N389(all_outputs[1]), .N390(all_outputs[2]), .N391(all_outputs[3]),
-    .N418(all_outputs[4]), .N419(all_outputs[5]), .N420(all_outputs[6]), .N421(all_outputs[7]),
-    .N422(all_outputs[8]), .N423(all_outputs[9]), .N446(all_outputs[10]),.N447(all_outputs[11]),
-    .N448(all_outputs[12]),.N449(all_outputs[13]),.N450(all_outputs[14]),.N767(all_outputs[15]),
-    .N768(all_outputs[16]),.N850(all_outputs[17]),.N863(all_outputs[18]),.N864(all_outputs[19]),
-    .N865(all_outputs[20]),.N866(all_outputs[21]),.N874(all_outputs[22]),.N878(all_outputs[23]),
-    .N879(all_outputs[24]),.N880(all_outputs[25]),
-    .set (set),       
-    .static_TK (static_TK) 
-  );
 endmodule

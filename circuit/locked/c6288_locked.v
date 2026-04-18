@@ -1,3 +1,32 @@
+module top_c6288_locked(
+    input [31:0] all_inputs,
+    output [31:0] all_outputs,
+    input [3:0]  static_K,
+    input [11:0] dynamic_K, key,
+    input        clk, rst_n
+  );
+  
+  wire [2:0] set;
+  wire [3:0] static_TK;
+
+  dylock_16 dylock_inst (
+    .dynamic_K (dynamic_K),
+    .static_K (static_K),
+    .key (key),
+    .clk (clk),
+    .rst_n (rst_n),
+    .static_TK (static_TK),
+    .set (set)
+  );
+
+  c6288_locked c6288_locked_inst (
+    .all_inputs (all_inputs),
+    .all_outputs (all_outputs),
+    .set (set),       
+    .static_TK (static_TK) 
+  );
+endmodule
+
 module nonlinear_gen ( K, TK );
   input   [3:0] K;
   output  [3:0] TK;
@@ -82,24 +111,89 @@ module dylock_16 ( static_K, dynamic_K, key, clk, rst_n, static_TK, set);
   assign static_TK = static_K;
 endmodule
 
-module c6288_locked (N1,N18,N35,N52,N69,N86,N103,N120,N137,N154,
-              N171,N188,N205,N222,N239,N256,N273,N290,N307,N324,
-              N341,N358,N375,N392,N409,N426,N443,N460,N477,N494,
-              N511,N528,N545,N1581,N1901,N2223,N2548,N2877,N3211,N3552,
-              N3895,N4241,N4591,N4946,N5308,N5672,N5971,N6123,N6150,N6160,
-              N6170,N6180,N6190,N6200,N6210,N6220,N6230,N6240,N6250,N6260,
-              N6270,N6280,N6287,N6288, set,static_TK);
+module c6288_locked (all_inputs, all_outputs, set,static_TK);
 
-  input N1,N18,N35,N52,N69,N86,N103,N120,N137,N154,
+  // I/O bus
+  input [31:0] all_inputs;
+  output [31:0] all_outputs;
+
+  // input
+  wire  N1,N18,N35,N52,N69,N86,N103,N120,N137,N154,
         N171,N188,N205,N222,N239,N256,N273,N290,N307,N324,
         N341,N358,N375,N392,N409,N426,N443,N460,N477,N494,
         N511,N528;
+  assign N1   = all_inputs[0];
+  assign N18  = all_inputs[1];
+  assign N35  = all_inputs[2];
+  assign N52  = all_inputs[3];
+  assign N69  = all_inputs[4];
+  assign N86  = all_inputs[5];
+  assign N103 = all_inputs[6];
+  assign N120 = all_inputs[7];
+  assign N137 = all_inputs[8];
+  assign N154 = all_inputs[9];
+  assign N171 = all_inputs[10];
+  assign N188 = all_inputs[11];
+  assign N205 = all_inputs[12];
+  assign N222 = all_inputs[13];
+  assign N239 = all_inputs[14];
+  assign N256 = all_inputs[15];
+  assign N273 = all_inputs[16];
+  assign N290 = all_inputs[17];
+  assign N307 = all_inputs[18];
+  assign N324 = all_inputs[19];
+  assign N341 = all_inputs[20];
+  assign N358 = all_inputs[21];
+  assign N375 = all_inputs[22];
+  assign N392 = all_inputs[23];
+  assign N409 = all_inputs[24];
+  assign N426 = all_inputs[25];
+  assign N443 = all_inputs[26];
+  assign N460 = all_inputs[27];
+  assign N477 = all_inputs[28];
+  assign N494 = all_inputs[29];
+  assign N511 = all_inputs[30];
+  assign N528 = all_inputs[31];
 
-  output N545,N1581,N1901,N2223,N2548,N2877,N3211,N3552,N3895,N4241,
+  // output
+  wire  N545,N1581,N1901,N2223,N2548,N2877,N3211,N3552,N3895,N4241,
         N4591,N4946,N5308,N5672,N5971,N6123,N6150,N6160,N6170,N6180,
         N6190,N6200,N6210,N6220,N6230,N6240,N6250,N6260,N6270,N6280,
         N6287,N6288;
+  assign all_outputs[0]  = N545;
+  assign all_outputs[1]  = N1581;
+  assign all_outputs[2]  = N1901;
+  assign all_outputs[3]  = N2223;
+  assign all_outputs[4]  = N2548;
+  assign all_outputs[5]  = N2877;
+  assign all_outputs[6]  = N3211;
+  assign all_outputs[7]  = N3552;
+  assign all_outputs[8]  = N3895;
+  assign all_outputs[9]  = N4241;
+  assign all_outputs[10] = N4591;
+  assign all_outputs[11] = N4946;
+  assign all_outputs[12] = N5308;
+  assign all_outputs[13] = N5672;
+  assign all_outputs[14] = N5971;
+  assign all_outputs[15] = N6123;
+  assign all_outputs[16] = N6150;
+  assign all_outputs[17] = N6160;
+  assign all_outputs[18] = N6170;
+  assign all_outputs[19] = N6180;
+  assign all_outputs[20] = N6190;
+  assign all_outputs[21] = N6200;
+  assign all_outputs[22] = N6210;
+  assign all_outputs[23] = N6220;
+  assign all_outputs[24] = N6230;
+  assign all_outputs[25] = N6240;
+  assign all_outputs[26] = N6250;
+  assign all_outputs[27] = N6260;
+  assign all_outputs[28] = N6270;
+  assign all_outputs[29] = N6280;
+  assign all_outputs[30] = N6287;
+  assign all_outputs[31] = N6288;
 
+  // wire rangkaian
   wire N546,N549,N552,N555,N558,N561,N564,N567,N570,N573,
       N576,N579,N582,N585,N588,N591,N594,N597,N600,N603,
       N606,N609,N612,N615,N618,N621,N624,N627,N630,N633,
@@ -340,12 +434,14 @@ module c6288_locked (N1,N18,N35,N52,N69,N86,N103,N120,N137,N154,
       N6255,N6256,N6257,N6261,N6265,N6266,N6267,N6271,N6275,N6276,
       N6277,N6281,N6285,N6286;
   
-  // declare lock
+  // input dylock
   input [2:0] set;
   input [3:0] static_TK;
 
+  // wire kunci
   wire N2190_locked, N2195_locked, N2341_locked, N2343_locked, N6160_locked, N6170_locked, N6180_locked;
 
+  // rangkaian c6288
   and AND2_1 (N545, N1, N273);
   and AND2_2 (N546, N1, N290);
   and AND2_3 (N549, N1, N307);
@@ -2763,7 +2859,7 @@ module c6288_locked (N1,N18,N35,N52,N69,N86,N103,N120,N137,N154,
   nor NOR2_2415 (N6287, N5602, N6281);
   nor NOR2_2416 (N6288, N6285, N6286);
 
-  // static dynamic lock
+  // rangkaian kunci (static_K = static_TK = 1001)
   xor static_lock_0 (N2190_locked, N2190, ~static_TK[0]);
   xor static_lock_1 (N2195_locked, N2195, static_TK[1]);
   xor static_lock_2 (N2341_locked, N2341, static_TK[2]);
@@ -2771,48 +2867,4 @@ module c6288_locked (N1,N18,N35,N52,N69,N86,N103,N120,N137,N154,
   xor dynamic_lock_0 (N6160_locked, N6160, ~set[0]);
   xor dynamic_lock_1 (N6170_locked, N6170, ~set[1]);
   xor dynamic_lock_2 (N6180_locked, N6180, ~set[2]);
-endmodule
-
-module top_c6288_locked(
-    input [31:0] all_inputs,
-    output [31:0] all_outputs,
-    input [3:0]  static_K,
-    input [11:0] dynamic_K, key,
-    input        clk, rst_n
-  );
-  
-  wire [2:0] set;
-  wire [3:0] static_TK;
-
-  dylock_16 dylock_inst (
-    .dynamic_K (dynamic_K),
-    .static_K (static_K),
-    .key (key),
-    .clk (clk),
-    .rst_n (rst_n),
-    .static_TK (static_TK),
-    .set (set)
-  );
-
-  c6288_locked c6288_locked_inst (
-    .N1(all_inputs[0]),    .N18(all_inputs[1]),   .N35(all_inputs[2]),   .N52(all_inputs[3]),
-    .N69(all_inputs[4]),   .N86(all_inputs[5]),   .N103(all_inputs[6]),  .N120(all_inputs[7]),
-    .N137(all_inputs[8]),  .N154(all_inputs[9]),  .N171(all_inputs[10]), .N188(all_inputs[11]),
-    .N205(all_inputs[12]), .N222(all_inputs[13]), .N239(all_inputs[14]), .N256(all_inputs[15]),
-    .N273(all_inputs[16]), .N290(all_inputs[17]), .N307(all_inputs[18]), .N324(all_inputs[19]),
-    .N341(all_inputs[20]), .N358(all_inputs[21]), .N375(all_inputs[22]), .N392(all_inputs[23]),
-    .N409(all_inputs[24]), .N426(all_inputs[25]), .N443(all_inputs[26]), .N460(all_inputs[27]),
-    .N477(all_inputs[28]), .N494(all_inputs[29]), .N511(all_inputs[30]), .N528(all_inputs[31]),
-
-    .N545(all_outputs[0]),   .N1581(all_outputs[1]),  .N1901(all_outputs[2]),  .N2223(all_outputs[3]),
-    .N2548(all_outputs[4]),  .N2877(all_outputs[5]),  .N3211(all_outputs[6]),  .N3552(all_outputs[7]),
-    .N3895(all_outputs[8]),  .N4241(all_outputs[9]),  .N4591(all_outputs[10]), .N4946(all_outputs[11]),
-    .N5308(all_outputs[12]), .N5672(all_outputs[13]), .N5971(all_outputs[14]), .N6123(all_outputs[15]),
-    .N6150(all_outputs[16]), .N6160(all_outputs[17]), .N6170(all_outputs[18]), .N6180(all_outputs[19]),
-    .N6190(all_outputs[20]), .N6200(all_outputs[21]), .N6210(all_outputs[22]), .N6220(all_outputs[23]),
-    .N6230(all_outputs[24]), .N6240(all_outputs[25]), .N6250(all_outputs[26]), .N6260(all_outputs[27]),
-    .N6270(all_outputs[28]), .N6280(all_outputs[29]), .N6287(all_outputs[30]), .N6288(all_outputs[31]),
-    .set (set),       
-    .static_TK (static_TK) 
-  );
 endmodule

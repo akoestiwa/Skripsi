@@ -1,19 +1,14 @@
 module tb_c17_locked();
-  reg N1,N2,N3,N6,N7;
+  reg [4:0] all_inputs;
   reg [3:0] insert_key_static, insert_key_dynamic, key;
   reg clk, rst_n;
 
-  wire N22,N23;
+  wire [1:0] all_outputs;
   integer i,file_handle;
 
   top_c17_locked uut (
-    .N1(N1), 
-    .N2(N2), 
-    .N3(N3), 
-    .N6(N6), 
-    .N7(N7), 
-    .N22(N22), 
-    .N23(N23),
+    .all_inputs (all_inputs), 
+    .all_outputs (all_outputs), 
 
     .static_K(insert_key_static),
     .dynamic_K(insert_key_dynamic),
@@ -41,24 +36,28 @@ module tb_c17_locked();
 
     insert_key_static = 4'b0;
     insert_key_dynamic = 4'b0;
-    {N1, N2, N3, N6, N7} = 5'b00000;
-    $fdisplay(file_handle, "%5t |     %b_%b    | %b%b%b%b%b | %b%b", $time, insert_key_static, insert_key_dynamic, N1,N2,N3,N6,N7 ,N22,N23);
+    {all_inputs} = { 5{1'b0} };
+    $fdisplay(file_handle, "%5t |     %b_%b    | %b | %b", $time, insert_key_static, insert_key_dynamic, all_inputs ,all_outputs);
     
 
     // key salah
-    // insert_key_static = 4'b1011;
-    // insert_key_dynamic = 4'b0100;
+    // key_static = 4'b1011;
+    // key_dynamic = 4'b0100;
+
+    // key benar
+    // key_static = 4'b1001;
+    // key_dynamic = 4'b1011;
+
     #10 rst_n = 1;
     insert_key_static = 4'b1001;
     insert_key_dynamic = 4'b1011;
     #120;
     
     for (i=0; i<32; i=i+1) begin
-      {N1, N2, N3, N6, N7} = i; 
+      {all_inputs} = i;
       #10;
-      $fdisplay(file_handle, "%5t |     %b_%b    | %b%b%b%b%b | %b%b", $time, insert_key_static, insert_key_dynamic, N1,N2,N3,N6,N7 ,N22,N23);
+      $fdisplay(file_handle, "%5t |     %b_%b    | %b | %b", $time, insert_key_static, insert_key_dynamic, all_inputs ,all_outputs);
     end
 	$finish;
   end
-  
 endmodule

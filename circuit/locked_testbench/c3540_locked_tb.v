@@ -45,6 +45,10 @@ module tb_c3540_locked();
     // static = 4'b1001;
     // dynamic 12'b_1011_0001_0110;
 
+    // key salah
+    // static = 4'b1011
+    // dynamic = 12'b_1101_0111_100
+
     insert_key_static = 4'b1001;
     insert_key_dynamic = 12'b_1011_0001_0110;
     #120;

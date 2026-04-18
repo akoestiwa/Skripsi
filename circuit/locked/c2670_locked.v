@@ -1,3 +1,32 @@
+module top_c2670_locked(
+    input [232:0] all_inputs,
+    output [139:0] all_outputs,
+    input [3:0]  static_K,
+    input [11:0] dynamic_K, key,
+    input        clk, rst_n
+  );
+  
+  wire [2:0] set;
+  wire [3:0] static_TK;
+
+  dylock_16 dylock_inst (
+    .dynamic_K (dynamic_K),
+    .static_K (static_K),
+    .key (key),
+    .clk (clk),
+    .rst_n (rst_n),
+    .static_TK (static_TK),
+    .set (set)
+  );
+
+  c2670_locked c2670_locked_inst (
+    .all_inputs (all_inputs),
+    .all_outputs (all_outputs),
+    .set (set),       
+    .static_TK (static_TK) 
+  );
+endmodule
+
 module nonlinear_gen ( K, TK );
   input   [3:0] K;
   output  [3:0] TK;
@@ -82,46 +111,14 @@ module dylock_16 ( static_K, dynamic_K, key, clk, rst_n, static_TK, set);
   assign static_TK = static_K;
 endmodule
 
-module c2670_locked (N1,N2,N3,N4,N5,N6,N7,N8,N11,N14,
-              N15,N16,N19,N20,N21,N22,N23,N24,N25,N26,
-              N27,N28,N29,N32,N33,N34,N35,N36,N37,N40,
-              N43,N44,N47,N48,N49,N50,N51,N52,N53,N54,
-              N55,N56,N57,N60,N61,N62,N63,N64,N65,N66,
-              N67,N68,N69,N72,N73,N74,N75,N76,N77,N78,
-              N79,N80,N81,N82,N85,N86,N87,N88,N89,N90,
-              N91,N92,N93,N94,N95,N96,N99,N100,N101,N102,
-              N103,N104,N105,N106,N107,N108,N111,N112,N113,N114,
-              N115,N116,N117,N118,N119,N120,N123,N124,N125,N126,
-              N127,N128,N129,N130,N131,N132,N135,N136,N137,N138,
-              N139,N140,N141,N142,N219,N224,N227,N230,N231,N234,
-              N237,N241,N246,N253,N256,N259,N262,N263,N266,N269,
-              N272,N275,N278,N281,N284,N287,N290,N294,N297,N301,
-              N305,N309,N313,N316,N319,N322,N325,N328,N331,N334,
-              N337,N340,N343,N346,N349,N352,N355,N143_I,N144_I,N145_I,
-              N146_I,N147_I,N148_I,N149_I,N150_I,N151_I,N152_I,N153_I,N154_I,N155_I,
-              N156_I,N157_I,N158_I,N159_I,N160_I,N161_I,N162_I,N163_I,N164_I,N165_I,
-              N166_I,N167_I,N168_I,N169_I,N170_I,N171_I,N172_I,N173_I,N174_I,N175_I,
-              N176_I,N177_I,N178_I,N179_I,N180_I,N181_I,N182_I,N183_I,N184_I,N185_I,
-              N186_I,N187_I,N188_I,N189_I,N190_I,N191_I,N192_I,N193_I,N194_I,N195_I,
-              N196_I,N197_I,N198_I,N199_I,N200_I,N201_I,N202_I,N203_I,N204_I,N205_I,
-              N206_I,N207_I,N208_I,N209_I,N210_I,N211_I,N212_I,N213_I,N214_I,N215_I,
-              N216_I,N217_I,N218_I,N398,N400,N401,N419,N420,N456,N457,
-              N458,N487,N488,N489,N490,N491,N492,N493,N494,N792,
-              N799,N805,N1026,N1028,N1029,N1269,N1277,N1448,N1726,N1816,
-              N1817,N1818,N1819,N1820,N1821,N1969,N1970,N1971,N2010,N2012,
-              N2014,N2016,N2018,N2020,N2022,N2387,N2388,N2389,N2390,N2496,
-              N2643,N2644,N2891,N2925,N2970,N2971,N3038,N3079,N3546,N3671,
-              N3803,N3804,N3809,N3851,N3875,N3881,N3882,N143_O,N144_O,N145_O,
-              N146_O,N147_O,N148_O,N149_O,N150_O,N151_O,N152_O,N153_O,N154_O,N155_O,
-              N156_O,N157_O,N158_O,N159_O,N160_O,N161_O,N162_O,N163_O,N164_O,N165_O,
-              N166_O,N167_O,N168_O,N169_O,N170_O,N171_O,N172_O,N173_O,N174_O,N175_O,
-              N176_O,N177_O,N178_O,N179_O,N180_O,N181_O,N182_O,N183_O,N184_O,N185_O,
-              N186_O,N187_O,N188_O,N189_O,N190_O,N191_O,N192_O,N193_O,N194_O,N195_O,
-              N196_O,N197_O,N198_O,N199_O,N200_O,N201_O,N202_O,N203_O,N204_O,N205_O,
-              N206_O,N207_O,N208_O,N209_O,N210_O,N211_O,N212_O,N213_O,N214_O,N215_O,
-              N216_O,N217_O,N218_O, set,static_TK);
+module c2670_locked (all_inputs, all_outputs, set,static_TK);
 
-  input N1,N2,N3,N4,N5,N6,N7,N8,N11,N14,
+  // I/O bus
+  input [232:0] all_inputs;
+  output [139:0] all_outputs;
+  
+  // input
+  wire  N1,N2,N3,N4,N5,N6,N7,N8,N11,N14,
         N15,N16,N19,N20,N21,N22,N23,N24,N25,N26,
         N27,N28,N29,N32,N33,N34,N35,N36,N37,N40,
         N43,N44,N47,N48,N49,N50,N51,N52,N53,N54,
@@ -145,8 +142,242 @@ module c2670_locked (N1,N2,N3,N4,N5,N6,N7,N8,N11,N14,
         N196_I,N197_I,N198_I,N199_I,N200_I,N201_I,N202_I,N203_I,N204_I,N205_I,
         N206_I,N207_I,N208_I,N209_I,N210_I,N211_I,N212_I,N213_I,N214_I,N215_I,
         N216_I,N217_I,N218_I;
+  assign N1    = all_inputs[0];
+  assign N2    = all_inputs[1];
+  assign N3    = all_inputs[2];
+  assign N4    = all_inputs[3];
+  assign N5    = all_inputs[4];
+  assign N6    = all_inputs[5];
+  assign N7    = all_inputs[6];
+  assign N8    = all_inputs[7];
+  assign N11   = all_inputs[8];
+  assign N14   = all_inputs[9];
+  assign N15   = all_inputs[10];
+  assign N16   = all_inputs[11];
+  assign N19   = all_inputs[12];
+  assign N20   = all_inputs[13];
+  assign N21   = all_inputs[14];
+  assign N22   = all_inputs[15];
+  assign N23   = all_inputs[16];
+  assign N24   = all_inputs[17];
+  assign N25   = all_inputs[18];
+  assign N26   = all_inputs[19];
+  assign N27   = all_inputs[20];
+  assign N28   = all_inputs[21];
+  assign N29   = all_inputs[22];
+  assign N32   = all_inputs[23];
+  assign N33   = all_inputs[24];
+  assign N34   = all_inputs[25];
+  assign N35   = all_inputs[26];
+  assign N36   = all_inputs[27];
+  assign N37   = all_inputs[28];
+  assign N40   = all_inputs[29];
+  assign N43   = all_inputs[30];
+  assign N44   = all_inputs[31];
+  assign N47   = all_inputs[32];
+  assign N48   = all_inputs[33];
+  assign N49   = all_inputs[34];
+  assign N50   = all_inputs[35];
+  assign N51   = all_inputs[36];
+  assign N52   = all_inputs[37];
+  assign N53   = all_inputs[38];
+  assign N54   = all_inputs[39];
+  assign N55   = all_inputs[40];
+  assign N56   = all_inputs[41];
+  assign N57   = all_inputs[42];
+  assign N60   = all_inputs[43];
+  assign N61   = all_inputs[44];
+  assign N62   = all_inputs[45];
+  assign N63   = all_inputs[46];
+  assign N64   = all_inputs[47];
+  assign N65   = all_inputs[48];
+  assign N66   = all_inputs[49];
+  assign N67   = all_inputs[50];
+  assign N68   = all_inputs[51];
+  assign N69   = all_inputs[52];
+  assign N72   = all_inputs[53];
+  assign N73   = all_inputs[54];
+  assign N74   = all_inputs[55];
+  assign N75   = all_inputs[56];
+  assign N76   = all_inputs[57];
+  assign N77   = all_inputs[58];
+  assign N78   = all_inputs[59];
+  assign N79   = all_inputs[60];
+  assign N80   = all_inputs[61];
+  assign N81   = all_inputs[62];
+  assign N82   = all_inputs[63];
+  assign N85   = all_inputs[64];
+  assign N86   = all_inputs[65];
+  assign N87   = all_inputs[66];
+  assign N88   = all_inputs[67];
+  assign N89   = all_inputs[68];
+  assign N90   = all_inputs[69];
+  assign N91   = all_inputs[70];
+  assign N92   = all_inputs[71];
+  assign N93   = all_inputs[72];
+  assign N94   = all_inputs[73];
+  assign N95   = all_inputs[74];
+  assign N96   = all_inputs[75];
+  assign N99   = all_inputs[76];
+  assign N100  = all_inputs[77];
+  assign N101  = all_inputs[78];
+  assign N102  = all_inputs[79];
+  assign N103  = all_inputs[80];
+  assign N104  = all_inputs[81];
+  assign N105  = all_inputs[82];
+  assign N106  = all_inputs[83];
+  assign N107  = all_inputs[84];
+  assign N108  = all_inputs[85];
+  assign N111  = all_inputs[86];
+  assign N112  = all_inputs[87];
+  assign N113  = all_inputs[88];
+  assign N114  = all_inputs[89];
+  assign N115  = all_inputs[90];
+  assign N116  = all_inputs[91];
+  assign N117  = all_inputs[92];
+  assign N118  = all_inputs[93];
+  assign N119  = all_inputs[94];
+  assign N120  = all_inputs[95];
+  assign N123  = all_inputs[96];
+  assign N124  = all_inputs[97];
+  assign N125  = all_inputs[98];
+  assign N126  = all_inputs[99];
+  assign N127  = all_inputs[100];
+  assign N128  = all_inputs[101];
+  assign N129  = all_inputs[102];
+  assign N130  = all_inputs[103];
+  assign N131  = all_inputs[104];
+  assign N132  = all_inputs[105];
+  assign N135  = all_inputs[106];
+  assign N136  = all_inputs[107];
+  assign N137  = all_inputs[108];
+  assign N138  = all_inputs[109];
+  assign N139  = all_inputs[110];
+  assign N140  = all_inputs[111];
+  assign N141  = all_inputs[112];
+  assign N142  = all_inputs[113];
+  assign N219  = all_inputs[114];
+  assign N224  = all_inputs[115];
+  assign N227  = all_inputs[116];
+  assign N230  = all_inputs[117];
+  assign N231  = all_inputs[118];
+  assign N234  = all_inputs[119];
+  assign N237  = all_inputs[120];
+  assign N241  = all_inputs[121];
+  assign N246  = all_inputs[122];
+  assign N253  = all_inputs[123];
+  assign N256  = all_inputs[124];
+  assign N259  = all_inputs[125];
+  assign N262  = all_inputs[126];
+  assign N263  = all_inputs[127];
+  assign N266  = all_inputs[128];
+  assign N269  = all_inputs[129];
+  assign N272  = all_inputs[130];
+  assign N275  = all_inputs[131];
+  assign N278  = all_inputs[132];
+  assign N281  = all_inputs[133];
+  assign N284  = all_inputs[134];
+  assign N287  = all_inputs[135];
+  assign N290  = all_inputs[136];
+  assign N294  = all_inputs[137];
+  assign N297  = all_inputs[138];
+  assign N301  = all_inputs[139];
+  assign N305  = all_inputs[140];
+  assign N309  = all_inputs[141];
+  assign N313  = all_inputs[142];
+  assign N316  = all_inputs[143];
+  assign N319  = all_inputs[144];
+  assign N322  = all_inputs[145];
+  assign N325  = all_inputs[146];
+  assign N328  = all_inputs[147];
+  assign N331  = all_inputs[148];
+  assign N334  = all_inputs[149];
+  assign N337  = all_inputs[150];
+  assign N340  = all_inputs[151];
+  assign N343  = all_inputs[152];
+  assign N346  = all_inputs[153];
+  assign N349  = all_inputs[154];
+  assign N352  = all_inputs[155];
+  assign N355  = all_inputs[156];
+  assign N143_I = all_inputs[157];
+  assign N144_I = all_inputs[158];
+  assign N145_I = all_inputs[159];
+  assign N146_I = all_inputs[160];
+  assign N147_I = all_inputs[161];
+  assign N148_I = all_inputs[162];
+  assign N149_I = all_inputs[163];
+  assign N150_I = all_inputs[164];
+  assign N151_I = all_inputs[165];
+  assign N152_I = all_inputs[166];
+  assign N153_I = all_inputs[167];
+  assign N154_I = all_inputs[168];
+  assign N155_I = all_inputs[169];
+  assign N156_I = all_inputs[170];
+  assign N157_I = all_inputs[171];
+  assign N158_I = all_inputs[172];
+  assign N159_I = all_inputs[173];
+  assign N160_I = all_inputs[174];
+  assign N161_I = all_inputs[175];
+  assign N162_I = all_inputs[176];
+  assign N163_I = all_inputs[177];
+  assign N164_I = all_inputs[178];
+  assign N165_I = all_inputs[179];
+  assign N166_I = all_inputs[180];
+  assign N167_I = all_inputs[181];
+  assign N168_I = all_inputs[182];
+  assign N169_I = all_inputs[183];
+  assign N170_I = all_inputs[184];
+  assign N171_I = all_inputs[185];
+  assign N172_I = all_inputs[186];
+  assign N173_I = all_inputs[187];
+  assign N174_I = all_inputs[188];
+  assign N175_I = all_inputs[189];
+  assign N176_I = all_inputs[190];
+  assign N177_I = all_inputs[191];
+  assign N178_I = all_inputs[192];
+  assign N179_I = all_inputs[193];
+  assign N180_I = all_inputs[194];
+  assign N181_I = all_inputs[195];
+  assign N182_I = all_inputs[196];
+  assign N183_I = all_inputs[197];
+  assign N184_I = all_inputs[198];
+  assign N185_I = all_inputs[199];
+  assign N186_I = all_inputs[200];
+  assign N187_I = all_inputs[201];
+  assign N188_I = all_inputs[202];
+  assign N189_I = all_inputs[203];
+  assign N190_I = all_inputs[204];
+  assign N191_I = all_inputs[205];
+  assign N192_I = all_inputs[206];
+  assign N193_I = all_inputs[207];
+  assign N194_I = all_inputs[208];
+  assign N195_I = all_inputs[209];
+  assign N196_I = all_inputs[210];
+  assign N197_I = all_inputs[211];
+  assign N198_I = all_inputs[212];
+  assign N199_I = all_inputs[213];
+  assign N200_I = all_inputs[214];
+  assign N201_I = all_inputs[215];
+  assign N202_I = all_inputs[216];
+  assign N203_I = all_inputs[217];
+  assign N204_I = all_inputs[218];
+  assign N205_I = all_inputs[219];
+  assign N206_I = all_inputs[220];
+  assign N207_I = all_inputs[221];
+  assign N208_I = all_inputs[222];
+  assign N209_I = all_inputs[223];
+  assign N210_I = all_inputs[224];
+  assign N211_I = all_inputs[225];
+  assign N212_I = all_inputs[226];
+  assign N213_I = all_inputs[227];
+  assign N214_I = all_inputs[228];
+  assign N215_I = all_inputs[229];
+  assign N216_I = all_inputs[230];
+  assign N217_I = all_inputs[231];
+  assign N218_I = all_inputs[232];
 
-  output N398,N400,N401,N419,N420,N456,N457,N458,N487,N488,
+  // output
+  wire   N398,N400,N401,N419,N420,N456,N457,N458,N487,N488,
          N489,N490,N491,N492,N493,N494,N792,N799,N805,N1026,
          N1028,N1029,N1269,N1277,N1448,N1726,N1816,N1817,N1818,N1819,
          N1820,N1821,N1969,N1970,N1971,N2010,N2012,N2014,N2016,N2018,
@@ -160,7 +391,148 @@ module c2670_locked (N1,N2,N3,N4,N5,N6,N7,N8,N11,N14,
          N189_O,N190_O,N191_O,N192_O,N193_O,N194_O,N195_O,N196_O,N197_O,N198_O,
          N199_O,N200_O,N201_O,N202_O,N203_O,N204_O,N205_O,N206_O,N207_O,N208_O,
          N209_O,N210_O,N211_O,N212_O,N213_O,N214_O,N215_O,N216_O,N217_O,N218_O;
+  assign all_outputs[0]   = N398;
+  assign all_outputs[1]   = N400;
+  assign all_outputs[2]   = N401;
+  assign all_outputs[3]   = N419;
+  assign all_outputs[4]   = N420;
+  assign all_outputs[5]   = N456;
+  assign all_outputs[6]   = N457;
+  assign all_outputs[7]   = N458;
+  assign all_outputs[8]   = N487;
+  assign all_outputs[9]   = N488;
+  assign all_outputs[10]  = N489;
+  assign all_outputs[11]  = N490;
+  assign all_outputs[12]  = N491;
+  assign all_outputs[13]  = N492;
+  assign all_outputs[14]  = N493;
+  assign all_outputs[15]  = N494;
+  assign all_outputs[16]  = N792;
+  assign all_outputs[17]  = N799;
+  assign all_outputs[18]  = N805;
+  assign all_outputs[19]  = N1026;
+  assign all_outputs[20]  = N1028;
+  assign all_outputs[21]  = N1029;
+  assign all_outputs[22]  = N1269;
+  assign all_outputs[23]  = N1277;
+  assign all_outputs[24]  = N1448;
+  assign all_outputs[25]  = N1726;
+  assign all_outputs[26]  = N1816;
+  assign all_outputs[27]  = N1817;
+  assign all_outputs[28]  = N1818;
+  assign all_outputs[29]  = N1819;
+  assign all_outputs[30]  = N1820;
+  assign all_outputs[31]  = N1821;
+  assign all_outputs[32]  = N1969;
+  assign all_outputs[33]  = N1970;
+  assign all_outputs[34]  = N1971;
+  assign all_outputs[35]  = N2010;
+  assign all_outputs[36]  = N2012;
+  assign all_outputs[37]  = N2014;
+  assign all_outputs[38]  = N2016;
+  assign all_outputs[39]  = N2018;
+  assign all_outputs[40]  = N2020;
+  assign all_outputs[41]  = N2022;
+  assign all_outputs[42]  = N2387;
+  assign all_outputs[43]  = N2388;
+  assign all_outputs[44]  = N2389;
+  assign all_outputs[45]  = N2390;
+  assign all_outputs[46]  = N2496;
+  assign all_outputs[47]  = N2643;
+  assign all_outputs[48]  = N2644;
+  assign all_outputs[49]  = N2891;
+  assign all_outputs[50]  = N2925;
+  assign all_outputs[51]  = N2970;
+  assign all_outputs[52]  = N2971;
+  assign all_outputs[53]  = N3038;
+  assign all_outputs[54]  = N3079;
+  assign all_outputs[55]  = N3546;
+  assign all_outputs[56]  = N3671;
+  assign all_outputs[57]  = N3803;
+  assign all_outputs[58]  = N3804;
+  assign all_outputs[59]  = N3809;
+  assign all_outputs[60]  = N3851;
+  assign all_outputs[61]  = N3875;
+  assign all_outputs[62]  = N3881;
+  assign all_outputs[63]  = N3882;
+  assign all_outputs[64]  = N143_O;
+  assign all_outputs[65]  = N144_O;
+  assign all_outputs[66]  = N145_O;
+  assign all_outputs[67]  = N146_O;
+  assign all_outputs[68]  = N147_O;
+  assign all_outputs[69]  = N148_O;
+  assign all_outputs[70]  = N149_O;
+  assign all_outputs[71]  = N150_O;
+  assign all_outputs[72]  = N151_O;
+  assign all_outputs[73]  = N152_O;
+  assign all_outputs[74]  = N153_O;
+  assign all_outputs[75]  = N154_O;
+  assign all_outputs[76]  = N155_O;
+  assign all_outputs[77]  = N156_O;
+  assign all_outputs[78]  = N157_O;
+  assign all_outputs[79]  = N158_O;
+  assign all_outputs[80]  = N159_O;
+  assign all_outputs[81]  = N160_O;
+  assign all_outputs[82]  = N161_O;
+  assign all_outputs[83]  = N162_O;
+  assign all_outputs[84]  = N163_O;
+  assign all_outputs[85]  = N164_O;
+  assign all_outputs[86]  = N165_O;
+  assign all_outputs[87]  = N166_O;
+  assign all_outputs[88]  = N167_O;
+  assign all_outputs[89]  = N168_O;
+  assign all_outputs[90]  = N169_O;
+  assign all_outputs[91]  = N170_O;
+  assign all_outputs[92]  = N171_O;
+  assign all_outputs[93]  = N172_O;
+  assign all_outputs[94]  = N173_O;
+  assign all_outputs[95]  = N174_O;
+  assign all_outputs[96]  = N175_O;
+  assign all_outputs[97]  = N176_O;
+  assign all_outputs[98]  = N177_O;
+  assign all_outputs[99]  = N178_O;
+  assign all_outputs[100] = N179_O;
+  assign all_outputs[101] = N180_O;
+  assign all_outputs[102] = N181_O;
+  assign all_outputs[103] = N182_O;
+  assign all_outputs[104] = N183_O;
+  assign all_outputs[105] = N184_O;
+  assign all_outputs[106] = N185_O;
+  assign all_outputs[107] = N186_O;
+  assign all_outputs[108] = N187_O;
+  assign all_outputs[109] = N188_O;
+  assign all_outputs[110] = N189_O;
+  assign all_outputs[111] = N190_O;
+  assign all_outputs[112] = N191_O;
+  assign all_outputs[113] = N192_O;
+  assign all_outputs[114] = N193_O;
+  assign all_outputs[115] = N194_O;
+  assign all_outputs[116] = N195_O;
+  assign all_outputs[117] = N196_O;
+  assign all_outputs[118] = N197_O;
+  assign all_outputs[119] = N198_O;
+  assign all_outputs[120] = N199_O;
+  assign all_outputs[121] = N200_O;
+  assign all_outputs[122] = N201_O;
+  assign all_outputs[123] = N202_O;
+  assign all_outputs[124] = N203_O;
+  assign all_outputs[125] = N204_O;
+  assign all_outputs[126] = N205_O;
+  assign all_outputs[127] = N206_O;
+  assign all_outputs[128] = N207_O;
+  assign all_outputs[129] = N208_O;
+  assign all_outputs[130] = N209_O;
+  assign all_outputs[131] = N210_O;
+  assign all_outputs[132] = N211_O;
+  assign all_outputs[133] = N212_O;
+  assign all_outputs[134] = N213_O;
+  assign all_outputs[135] = N214_O;
+  assign all_outputs[136] = N215_O;
+  assign all_outputs[137] = N216_O;
+  assign all_outputs[138] = N217_O;
+  assign all_outputs[139] = N218_O;
 
+  // wire rangkaian
   wire N405,N408,N425,N485,N486,N495,N496,N499,N500,N503,
        N506,N509,N521,N533,N537,N543,N544,N547,N550,N562,
        N574,N578,N582,N594,N606,N607,N608,N609,N610,N611,
@@ -274,12 +646,15 @@ module c2670_locked (N1,N2,N3,N4,N5,N6,N7,N8,N11,N14,
        N3814,N3815,N3816,N3817,N3818,N3819,N3820,N3821,N3822,N3823,
        N3826,N3827,N3834,N3835,N3836,N3837,N3838,N3839,N3840,N3843,
        N3852,N3857,N3858,N3859,N3864,N3869,N3870,N3876,N3877;
-  // declare lock
+  
+  // input dylock
   input [2:0] set;
   input [3:0] static_TK;
 
+  // wire kunci
   wire N2213_locked, N2376_locked, N3007_locked, N3197_locked, N2931_locked, N3038_locked, N3079_locked;
 
+  // rangkaian c2670
   buf BUFF1_1 (N398, N219);
   buf BUFF1_2 (N400, N219);
   buf BUFF1_3 (N401, N219);
@@ -1550,7 +1925,7 @@ module c2670_locked (N1,N2,N3,N4,N5,N6,N7,N8,N11,N14,
   buf BUFF1_1268 (N217_O, N217_I);
   buf BUFF1_1269 (N218_O, N218_I);
 
-  // static dynamic lock
+  // rangkaian kunci (static_K = static_TK = 1001)
   xor static_lock_0 (N2213_locked, N2213, ~static_TK[0]);
   xor static_lock_1 (N2376_locked, N2376, static_TK[1]);
   xor static_lock_2 (N3007_locked, N3007, static_TK[2]);
@@ -1558,126 +1933,4 @@ module c2670_locked (N1,N2,N3,N4,N5,N6,N7,N8,N11,N14,
   xor dynamic_lock_0 (N2931_locked, N2931, ~set[0]);
   xor dynamic_lock_1 (N3038_locked, N3038, ~set[1]);
   xor dynamic_lock_2 (N3079_locked, N3079, ~set[2]);
-endmodule
-
-module top_c2670_locked(
-    input [232:0] all_inputs,
-    output [139:0] all_outputs,
-    input [3:0]  static_K,
-    input [11:0] dynamic_K, key,
-    input        clk, rst_n
-  );
-  
-  wire [2:0] set;
-  wire [3:0] static_TK;
-
-  dylock_16 dylock_inst (
-    .dynamic_K (dynamic_K),
-    .static_K (static_K),
-    .key (key),
-    .clk (clk),
-    .rst_n (rst_n),
-    .static_TK (static_TK),
-    .set (set)
-  );
-
-  c2670_locked c2670_locked_inst (
-    .N1(all_inputs[0]),     .N2(all_inputs[1]),     .N3(all_inputs[2]),     .N4(all_inputs[3]),
-    .N5(all_inputs[4]),     .N6(all_inputs[5]),     .N7(all_inputs[6]),     .N8(all_inputs[7]),
-    .N11(all_inputs[8]),    .N14(all_inputs[9]),    .N15(all_inputs[10]),   .N16(all_inputs[11]),
-    .N19(all_inputs[12]),   .N20(all_inputs[13]),   .N21(all_inputs[14]),   .N22(all_inputs[15]),
-    .N23(all_inputs[16]),   .N24(all_inputs[17]),   .N25(all_inputs[18]),   .N26(all_inputs[19]),
-    .N27(all_inputs[20]),   .N28(all_inputs[21]),   .N29(all_inputs[22]),   .N32(all_inputs[23]),
-    .N33(all_inputs[24]),   .N34(all_inputs[25]),   .N35(all_inputs[26]),   .N36(all_inputs[27]),
-    .N37(all_inputs[28]),   .N40(all_inputs[29]),   .N43(all_inputs[30]),   .N44(all_inputs[31]),
-    .N47(all_inputs[32]),   .N48(all_inputs[33]),   .N49(all_inputs[34]),   .N50(all_inputs[35]),
-    .N51(all_inputs[36]),   .N52(all_inputs[37]),   .N53(all_inputs[38]),   .N54(all_inputs[39]),
-    .N55(all_inputs[40]),   .N56(all_inputs[41]),   .N57(all_inputs[42]),   .N60(all_inputs[43]),
-    .N61(all_inputs[44]),   .N62(all_inputs[45]),   .N63(all_inputs[46]),   .N64(all_inputs[47]),
-    .N65(all_inputs[48]),   .N66(all_inputs[49]),   .N67(all_inputs[50]),   .N68(all_inputs[51]),
-    .N69(all_inputs[52]),   .N72(all_inputs[53]),   .N73(all_inputs[54]),   .N74(all_inputs[55]),
-    .N75(all_inputs[56]),   .N76(all_inputs[57]),   .N77(all_inputs[58]),   .N78(all_inputs[59]),
-    .N79(all_inputs[60]),   .N80(all_inputs[61]),   .N81(all_inputs[62]),   .N82(all_inputs[63]),
-    .N85(all_inputs[64]),   .N86(all_inputs[65]),   .N87(all_inputs[66]),   .N88(all_inputs[67]),
-    .N89(all_inputs[68]),   .N90(all_inputs[69]),   .N91(all_inputs[70]),   .N92(all_inputs[71]),
-    .N93(all_inputs[72]),   .N94(all_inputs[73]),   .N95(all_inputs[74]),   .N96(all_inputs[75]),
-    .N99(all_inputs[76]),   .N100(all_inputs[77]),  .N101(all_inputs[78]),  .N102(all_inputs[79]),
-    .N103(all_inputs[80]),  .N104(all_inputs[81]),  .N105(all_inputs[82]),  .N106(all_inputs[83]),
-    .N107(all_inputs[84]),  .N108(all_inputs[85]),  .N111(all_inputs[86]),  .N112(all_inputs[87]),
-    .N113(all_inputs[88]),  .N114(all_inputs[89]),  .N115(all_inputs[90]),  .N116(all_inputs[91]),
-    .N117(all_inputs[92]),  .N118(all_inputs[93]),  .N119(all_inputs[94]),  .N120(all_inputs[95]),
-    .N123(all_inputs[96]),  .N124(all_inputs[97]),  .N125(all_inputs[98]),  .N126(all_inputs[99]),
-    .N127(all_inputs[100]), .N128(all_inputs[101]), .N129(all_inputs[102]), .N130(all_inputs[103]),
-    .N131(all_inputs[104]), .N132(all_inputs[105]), .N135(all_inputs[106]), .N136(all_inputs[107]),
-    .N137(all_inputs[108]), .N138(all_inputs[109]), .N139(all_inputs[110]), .N140(all_inputs[111]),
-    .N141(all_inputs[112]), .N142(all_inputs[113]), .N219(all_inputs[114]), .N224(all_inputs[115]),
-    .N227(all_inputs[116]), .N230(all_inputs[117]), .N231(all_inputs[118]), .N234(all_inputs[119]),
-    .N237(all_inputs[120]), .N241(all_inputs[121]), .N246(all_inputs[122]), .N253(all_inputs[123]),
-    .N256(all_inputs[124]), .N259(all_inputs[125]), .N262(all_inputs[126]), .N263(all_inputs[127]),
-    .N266(all_inputs[128]), .N269(all_inputs[129]), .N272(all_inputs[130]), .N275(all_inputs[131]),
-    .N278(all_inputs[132]), .N281(all_inputs[133]), .N284(all_inputs[134]), .N287(all_inputs[135]),
-    .N290(all_inputs[136]), .N294(all_inputs[137]), .N297(all_inputs[138]), .N301(all_inputs[139]),
-    .N305(all_inputs[140]), .N309(all_inputs[141]), .N313(all_inputs[142]), .N316(all_inputs[143]),
-    .N319(all_inputs[144]), .N322(all_inputs[145]), .N325(all_inputs[146]), .N328(all_inputs[147]),
-    .N331(all_inputs[148]), .N334(all_inputs[149]), .N337(all_inputs[150]), .N340(all_inputs[151]),
-    .N343(all_inputs[152]), .N346(all_inputs[153]), .N349(all_inputs[154]), .N352(all_inputs[155]),
-    .N355(all_inputs[156]), 
-    .N143_I(all_inputs[157]), .N144_I(all_inputs[158]), .N145_I(all_inputs[159]), .N146_I(all_inputs[160]),
-    .N147_I(all_inputs[161]), .N148_I(all_inputs[162]), .N149_I(all_inputs[163]), .N150_I(all_inputs[164]),
-    .N151_I(all_inputs[165]), .N152_I(all_inputs[166]), .N153_I(all_inputs[167]), .N154_I(all_inputs[168]),
-    .N155_I(all_inputs[169]), .N156_I(all_inputs[170]), .N157_I(all_inputs[171]), .N158_I(all_inputs[172]),
-    .N159_I(all_inputs[173]), .N160_I(all_inputs[174]), .N161_I(all_inputs[175]), .N162_I(all_inputs[176]),
-    .N163_I(all_inputs[177]), .N164_I(all_inputs[178]), .N165_I(all_inputs[179]), .N166_I(all_inputs[180]),
-    .N167_I(all_inputs[181]), .N168_I(all_inputs[182]), .N169_I(all_inputs[183]), .N170_I(all_inputs[184]),
-    .N171_I(all_inputs[185]), .N172_I(all_inputs[186]), .N173_I(all_inputs[187]), .N174_I(all_inputs[188]),
-    .N175_I(all_inputs[189]), .N176_I(all_inputs[190]), .N177_I(all_inputs[191]), .N178_I(all_inputs[192]),
-    .N179_I(all_inputs[193]), .N180_I(all_inputs[194]), .N181_I(all_inputs[195]), .N182_I(all_inputs[196]),
-    .N183_I(all_inputs[197]), .N184_I(all_inputs[198]), .N185_I(all_inputs[199]), .N186_I(all_inputs[200]),
-    .N187_I(all_inputs[201]), .N188_I(all_inputs[202]), .N189_I(all_inputs[203]), .N190_I(all_inputs[204]),
-    .N191_I(all_inputs[205]), .N192_I(all_inputs[206]), .N193_I(all_inputs[207]), .N194_I(all_inputs[208]),
-    .N195_I(all_inputs[209]), .N196_I(all_inputs[210]), .N197_I(all_inputs[211]), .N198_I(all_inputs[212]),
-    .N199_I(all_inputs[213]), .N200_I(all_inputs[214]), .N201_I(all_inputs[215]), .N202_I(all_inputs[216]),
-    .N203_I(all_inputs[217]), .N204_I(all_inputs[218]), .N205_I(all_inputs[219]), .N206_I(all_inputs[220]),
-    .N207_I(all_inputs[221]), .N208_I(all_inputs[222]), .N209_I(all_inputs[223]), .N210_I(all_inputs[224]),
-    .N211_I(all_inputs[225]), .N212_I(all_inputs[226]), .N213_I(all_inputs[227]), .N214_I(all_inputs[228]),
-    .N215_I(all_inputs[229]), .N216_I(all_inputs[230]), .N217_I(all_inputs[231]), .N218_I(all_inputs[232]),
-
-    .N398(all_outputs[0]),   .N400(all_outputs[1]),   .N401(all_outputs[2]),   .N419(all_outputs[3]),
-    .N420(all_outputs[4]),   .N456(all_outputs[5]),   .N457(all_outputs[6]),   .N458(all_outputs[7]),
-    .N487(all_outputs[8]),   .N488(all_outputs[9]),   .N489(all_outputs[10]),  .N490(all_outputs[11]),
-    .N491(all_outputs[12]),  .N492(all_outputs[13]),  .N493(all_outputs[14]),  .N494(all_outputs[15]),
-    .N792(all_outputs[16]),  .N799(all_outputs[17]),  .N805(all_outputs[18]),  .N1026(all_outputs[19]),
-    .N1028(all_outputs[20]), .N1029(all_outputs[21]), .N1269(all_outputs[22]), .N1277(all_outputs[23]),
-    .N1448(all_outputs[24]), .N1726(all_outputs[25]), .N1816(all_outputs[26]), .N1817(all_outputs[27]),
-    .N1818(all_outputs[28]), .N1819(all_outputs[29]), .N1820(all_outputs[30]), .N1821(all_outputs[31]),
-    .N1969(all_outputs[32]), .N1970(all_outputs[33]), .N1971(all_outputs[34]), .N2010(all_outputs[35]),
-    .N2012(all_outputs[36]), .N2014(all_outputs[37]), .N2016(all_outputs[38]), .N2018(all_outputs[39]),
-    .N2020(all_outputs[40]), .N2022(all_outputs[41]), .N2387(all_outputs[42]), .N2388(all_outputs[43]),
-    .N2389(all_outputs[44]), .N2390(all_outputs[45]), .N2496(all_outputs[46]), .N2643(all_outputs[47]),
-    .N2644(all_outputs[48]), .N2891(all_outputs[49]), .N2925(all_outputs[50]), .N2970(all_outputs[51]),
-    .N2971(all_outputs[52]), .N3038(all_outputs[53]), .N3079(all_outputs[54]), .N3546(all_outputs[55]),
-    .N3671(all_outputs[56]), .N3803(all_outputs[57]), .N3804(all_outputs[58]), .N3809(all_outputs[59]),
-    .N3851(all_outputs[60]), .N3875(all_outputs[61]), .N3881(all_outputs[62]), .N3882(all_outputs[63]),
-    .N143_O(all_outputs[64]), .N144_O(all_outputs[65]), .N145_O(all_outputs[66]), .N146_O(all_outputs[67]),
-    .N147_O(all_outputs[68]), .N148_O(all_outputs[69]), .N149_O(all_outputs[70]), .N150_O(all_outputs[71]),
-    .N151_O(all_outputs[72]), .N152_O(all_outputs[73]), .N153_O(all_outputs[74]), .N154_O(all_outputs[75]),
-    .N155_O(all_outputs[76]), .N156_O(all_outputs[77]), .N157_O(all_outputs[78]), .N158_O(all_outputs[79]),
-    .N159_O(all_outputs[80]), .N160_O(all_outputs[81]), .N161_O(all_outputs[82]), .N162_O(all_outputs[83]),
-    .N163_O(all_outputs[84]), .N164_O(all_outputs[85]), .N165_O(all_outputs[86]), .N166_O(all_outputs[87]),
-    .N167_O(all_outputs[88]), .N168_O(all_outputs[89]), .N169_O(all_outputs[90]), .N170_O(all_outputs[91]),
-    .N171_O(all_outputs[92]), .N172_O(all_outputs[93]), .N173_O(all_outputs[94]), .N174_O(all_outputs[95]),
-    .N175_O(all_outputs[96]), .N176_O(all_outputs[97]), .N177_O(all_outputs[98]), .N178_O(all_outputs[99]),
-    .N179_O(all_outputs[100]),.N180_O(all_outputs[101]),.N181_O(all_outputs[102]),.N182_O(all_outputs[103]),
-    .N183_O(all_outputs[104]),.N184_O(all_outputs[105]),.N185_O(all_outputs[106]),.N186_O(all_outputs[107]),
-    .N187_O(all_outputs[108]),.N188_O(all_outputs[109]),.N189_O(all_outputs[110]),.N190_O(all_outputs[111]),
-    .N191_O(all_outputs[112]),.N192_O(all_outputs[113]),.N193_O(all_outputs[114]),.N194_O(all_outputs[115]),
-    .N195_O(all_outputs[116]),.N196_O(all_outputs[117]),.N197_O(all_outputs[118]),.N198_O(all_outputs[119]),
-    .N199_O(all_outputs[120]),.N200_O(all_outputs[121]),.N201_O(all_outputs[122]),.N202_O(all_outputs[123]),
-    .N203_O(all_outputs[124]),.N204_O(all_outputs[125]),.N205_O(all_outputs[126]),.N206_O(all_outputs[127]),
-    .N207_O(all_outputs[128]),.N208_O(all_outputs[129]),.N209_O(all_outputs[130]),.N210_O(all_outputs[131]),
-    .N211_O(all_outputs[132]),.N212_O(all_outputs[133]),.N213_O(all_outputs[134]),.N214_O(all_outputs[135]),
-    .N215_O(all_outputs[136]),.N216_O(all_outputs[137]),.N217_O(all_outputs[138]),.N218_O(all_outputs[139]),
-    .set (set),       
-    .static_TK (static_TK) 
-  );
 endmodule

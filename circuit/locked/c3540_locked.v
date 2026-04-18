@@ -1,3 +1,32 @@
+module top_3540_locked(
+    input [49:0] all_inputs,
+    output [21:0] all_outputs,
+    input [3:0]  static_K,
+    input [11:0] dynamic_K, key,
+    input        clk, rst_n
+  );
+  
+  wire [2:0] set;
+  wire [3:0] static_TK;
+
+  dylock_16 dylock_inst (
+    .dynamic_K (dynamic_K),
+    .static_K (static_K),
+    .key (key),
+    .clk (clk),
+    .rst_n (rst_n),
+    .static_TK (static_TK),
+    .set (set)
+  );
+
+  c3540_locked c3540_locked_inst (
+    .all_inputs (all_inputs),
+    .all_outputs (all_outputs),
+    .set (set),       
+    .static_TK (static_TK) 
+  );
+endmodule
+
 module nonlinear_gen ( K, TK );
   input   [3:0] K;
   output  [3:0] TK;
@@ -82,25 +111,97 @@ module dylock_16 ( static_K, dynamic_K, key, clk, rst_n, static_TK, set);
   assign static_TK = static_K;
 endmodule
 
-module c3540_locked (N1,N13,N20,N33,N41,N45,N50,N58,N68,N77,
-              N87,N97,N107,N116,N124,N125,N128,N132,N137,N143,
-              N150,N159,N169,N179,N190,N200,N213,N222,N223,N226,
-              N232,N238,N244,N250,N257,N264,N270,N274,N283,N294,
-              N303,N311,N317,N322,N326,N329,N330,N343,N349,N350,
-              N1713,N1947,N3195,N3833,N3987,N4028,N4145,N4589,N4667,N4815,
-              N4944,N5002,N5045,N5047,N5078,N5102,N5120,N5121,N5192,N5231,
-              N5360,N5361, set,static_TK);
+module c3540_locked (all_inputs, all_outputs, set, static_TK);
 
-  input N1,N13,N20,N33,N41,N45,N50,N58,N68,N77,
+  // I/O bus
+  input [49:0] all_inputs;
+  output [21:0] all_outputs;
+
+  // input
+  wire  N1,N13,N20,N33,N41,N45,N50,N58,N68,N77,
         N87,N97,N107,N116,N124,N125,N128,N132,N137,N143,
         N150,N159,N169,N179,N190,N200,N213,N222,N223,N226,
         N232,N238,N244,N250,N257,N264,N270,N274,N283,N294,
         N303,N311,N317,N322,N326,N329,N330,N343,N349,N350;
+  assign N1   = all_inputs[0];
+  assign N13  = all_inputs[1];
+  assign N20  = all_inputs[2];
+  assign N33  = all_inputs[3];
+  assign N41  = all_inputs[4];
+  assign N45  = all_inputs[5];
+  assign N50  = all_inputs[6];
+  assign N58  = all_inputs[7];
+  assign N68  = all_inputs[8];
+  assign N77  = all_inputs[9];
+  assign N87  = all_inputs[10];
+  assign N97  = all_inputs[11];
+  assign N107 = all_inputs[12];
+  assign N116 = all_inputs[13];
+  assign N124 = all_inputs[14];
+  assign N125 = all_inputs[15];
+  assign N128 = all_inputs[16];
+  assign N132 = all_inputs[17];
+  assign N137 = all_inputs[18];
+  assign N143 = all_inputs[19];
+  assign N150 = all_inputs[20];
+  assign N159 = all_inputs[21];
+  assign N169 = all_inputs[22];
+  assign N179 = all_inputs[23];
+  assign N190 = all_inputs[24];
+  assign N200 = all_inputs[25];
+  assign N213 = all_inputs[26];
+  assign N222 = all_inputs[27];
+  assign N223 = all_inputs[28];
+  assign N226 = all_inputs[29];
+  assign N232 = all_inputs[30];
+  assign N238 = all_inputs[31];
+  assign N244 = all_inputs[32];
+  assign N250 = all_inputs[33];
+  assign N257 = all_inputs[34];
+  assign N264 = all_inputs[35];
+  assign N270 = all_inputs[36];
+  assign N274 = all_inputs[37];
+  assign N283 = all_inputs[38];
+  assign N294 = all_inputs[39];
+  assign N303 = all_inputs[40];
+  assign N311 = all_inputs[41];
+  assign N317 = all_inputs[42];
+  assign N322 = all_inputs[43];
+  assign N326 = all_inputs[44];
+  assign N329 = all_inputs[45];
+  assign N330 = all_inputs[46];
+  assign N343 = all_inputs[47];
+  assign N349 = all_inputs[48];
+  assign N350 = all_inputs[49];
 
-  output N1713,N1947,N3195,N3833,N3987,N4028,N4145,N4589,N4667,N4815,
+  // output
+  wire N1713,N1947,N3195,N3833,N3987,N4028,N4145,N4589,N4667,N4815,
         N4944,N5002,N5045,N5047,N5078,N5102,N5120,N5121,N5192,N5231,
         N5360,N5361;
+  assign all_outputs[0]  = N1713;
+  assign all_outputs[1]  = N1947;
+  assign all_outputs[2]  = N3195;
+  assign all_outputs[3]  = N3833;
+  assign all_outputs[4]  = N3987;
+  assign all_outputs[5]  = N4028;
+  assign all_outputs[6]  = N4145;
+  assign all_outputs[7]  = N4589;
+  assign all_outputs[8]  = N4667;
+  assign all_outputs[9]  = N4815;
+  assign all_outputs[10] = N4944;
+  assign all_outputs[11] = N5002;
+  assign all_outputs[12] = N5045;
+  assign all_outputs[13] = N5047;
+  assign all_outputs[14] = N5078;
+  assign all_outputs[15] = N5102;
+  assign all_outputs[16] = N5120;
+  assign all_outputs[17] = N5121;
+  assign all_outputs[18] = N5192;
+  assign all_outputs[19] = N5231;
+  assign all_outputs[20] = N5360;
+  assign all_outputs[21] = N5361;
 
+  // wire rangkaian
   wire N655,N665,N670,N679,N683,N686,N690,N699,N702,N706,
       N715,N724,N727,N736,N740,N749,N753,N763,N768,N769,
       N772,N779,N782,N786,N793,N794,N798,N803,N820,N821,
@@ -267,12 +368,14 @@ module c3540_locked (N1,N13,N20,N33,N41,N45,N50,N58,N68,N77,
       N5335,N5340,N5341,N5344,N5345,N5348,N5349,N5350,N5351,N5352,
       N5353,N5354,N5355,N5356,N5357,N5358,N5359;
 
-  // declare lock
+  // input dylock
   input [2:0] set;
   input [3:0] static_TK;
 
+  // wire kunci
   wire N5117_locked, N5139_locked, N5159_locked, N5182_locked, N4602_locked, N4704_locked, N4859_locked;
 
+  // rangkaian c3540
   buf BUFF1_1 (N655, N50);
   not NOT1_2 (N665, N50);
   buf BUFF1_3 (N670, N58);
@@ -1943,7 +2046,7 @@ module c3540_locked (N1,N13,N20,N33,N41,N45,N50,N58,N68,N77,
   and AND2_1668 (N5360, N5356, N5357);
   nand NAND2_1669 (N5361, N5358, N5359);
 
-  // static dynamic lock
+  // rangkaian kunci (static_K = static_TK = 1001)
   xor static_lock_0 (N5117_locked, N5117, ~static_TK[0]);
   xor static_lock_1 (N5139_locked, N5139, static_TK[1]);
   xor static_lock_2 (N5159_locked, N5159, static_TK[2]);
@@ -1951,51 +2054,4 @@ module c3540_locked (N1,N13,N20,N33,N41,N45,N50,N58,N68,N77,
   xor dynamic_lock_0 (N4602_locked, N4602, ~set[0]);
   xor dynamic_lock_1 (N4704_locked, N4704, ~set[1]);
   xor dynamic_lock_2 (N4859_locked, N4859, ~set[2]);
-endmodule
-
-module top_3540_locked(
-    input [49:0] all_inputs,
-    output [21:0] all_outputs,
-    input [3:0]  static_K,
-    input [11:0] dynamic_K, key,
-    input        clk, rst_n
-  );
-  
-  wire [2:0] set;
-  wire [3:0] static_TK;
-
-  dylock_16 dylock_inst (
-    .dynamic_K (dynamic_K),
-    .static_K (static_K),
-    .key (key),
-    .clk (clk),
-    .rst_n (rst_n),
-    .static_TK (static_TK),
-    .set (set)
-  );
-
-  c3540_locked c3540_locked_inst (
-    .N1(all_inputs[0]),     .N13(all_inputs[1]),    .N20(all_inputs[2]),    .N33(all_inputs[3]),
-    .N41(all_inputs[4]),    .N45(all_inputs[5]),    .N50(all_inputs[6]),    .N58(all_inputs[7]),
-    .N68(all_inputs[8]),    .N77(all_inputs[9]),    .N87(all_inputs[10]),   .N97(all_inputs[11]),
-    .N107(all_inputs[12]),  .N116(all_inputs[13]),  .N124(all_inputs[14]),  .N125(all_inputs[15]),
-    .N128(all_inputs[16]),  .N132(all_inputs[17]),  .N137(all_inputs[18]),  .N143(all_inputs[19]),
-    .N150(all_inputs[20]),  .N159(all_inputs[21]),  .N169(all_inputs[22]),  .N179(all_inputs[23]),
-    .N190(all_inputs[24]),  .N200(all_inputs[25]),  .N213(all_inputs[26]),  .N222(all_inputs[27]),
-    .N223(all_inputs[28]),  .N226(all_inputs[29]),  .N232(all_inputs[30]),  .N238(all_inputs[31]),
-    .N244(all_inputs[32]),  .N250(all_inputs[33]),  .N257(all_inputs[34]),  .N264(all_inputs[35]),
-    .N270(all_inputs[36]),  .N274(all_inputs[37]),  .N283(all_inputs[38]),  .N294(all_inputs[39]),
-    .N303(all_inputs[40]),  .N311(all_inputs[41]),  .N317(all_inputs[42]),  .N322(all_inputs[43]),
-    .N326(all_inputs[44]),  .N329(all_inputs[45]),  .N330(all_inputs[46]),  .N343(all_inputs[47]),
-    .N349(all_inputs[48]),  .N350(all_inputs[49]),
-
-    .N1713(all_outputs[0]), .N1947(all_outputs[1]), .N3195(all_outputs[2]), .N3833(all_outputs[3]),
-    .N3987(all_outputs[4]), .N4028(all_outputs[5]), .N4145(all_outputs[6]), .N4589(all_outputs[7]),
-    .N4667(all_outputs[8]), .N4815(all_outputs[9]), .N4944(all_outputs[10]),.N5002(all_outputs[11]),
-    .N5045(all_outputs[12]),.N5047(all_outputs[13]),.N5078(all_outputs[14]),.N5102(all_outputs[15]),
-    .N5120(all_outputs[16]),.N5121(all_outputs[17]),.N5192(all_outputs[18]),.N5231(all_outputs[19]),
-    .N5360(all_outputs[20]),.N5361(all_outputs[21]),
-    .set (set),       
-    .static_TK (static_TK) 
-  );
 endmodule

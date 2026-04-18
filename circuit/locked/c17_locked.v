@@ -1,3 +1,31 @@
+module top_c17_locked (
+    input [4:0] all_inputs,
+    output [1:0] all_outputs,
+    input [3:0] static_K, dynamic_K, key,
+    input       clk, rst_n
+  );
+
+  wire set;
+  wire [3:0] static_TK;
+
+  dylock_8 dylock_inst (
+    .dynamic_K (dynamic_K),
+    .static_K (static_K),
+    .key (key),
+    .clk (clk),
+    .rst_n (rst_n),
+    .static_TK (static_TK),
+    .set (set)
+  );
+
+  c17_locked c17_locked_inst (
+    .all_inputs (all_inputs), 
+    .all_outputs (all_outputs),
+    .set (set),       
+    .static_TK (static_TK) 
+  );
+endmodule
+
 module nonlinear_gen ( K, TK );
   input   [3:0] K;
   output  [3:0] TK;
@@ -75,17 +103,36 @@ module dylock_8 ( static_K, dynamic_K, key, clk, rst_n, static_TK, set);
   assign static_TK = static_K;
 endmodule
 
-module c17_locked ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
-  input N1,N2,N3,N6,N7;
-  output N22,N23;
+module c17_locked ( all_inputs, all_outputs, set,static_TK );
+  
+  // input bus
+  input [4:0] all_inputs;
+  output [1:0] all_outputs;
+  
+  // input
+  wire N1,N2,N3,N6,N7;
+  assign N1 = all_inputs[0];
+  assign N2 = all_inputs[1];
+  assign N3 = all_inputs[2];
+  assign N6 = all_inputs[3];
+  assign N7 = all_inputs[4];
+  
+  // output
+  wire N22,N23;
+  assign all_outputs[0] = N22;
+  assign all_outputs[1] = N23;
 
+  // wire rangkaian
   wire N10,N11,N16,N19;
-
+  
+  // input dylock
   input set;
   input [3:0] static_TK;
 
+  // wire kunci
   wire N11_locked, N6_locked, N7_locked, N16_locked, N19_locked;
   
+  // rangkaian c17
   nand NAND2_1 (N10, N1, N3);
   nand NAND2_2 (N11, N3, N6_locked);
   nand NAND2_3 (N16, N2, N11_locked);
@@ -93,44 +140,10 @@ module c17_locked ( N1,N2,N3,N6,N7,N22,N23, set,static_TK );
   nand NAND2_5 (N22, N10, N16_locked);
   nand NAND2_6 (N23, N16_locked, N19_locked);
 
-  // static_K = static_TK = 1001
+  // rangkaian kunci (static_K = static_TK = 1001)
   xor static_lock_0 (N6_locked, N6, ~static_TK[0]);
   xor static_lock_1 (N7_locked, N7, static_TK[1]);
   xor static_lock_2 (N16_locked, N16, static_TK[2]);
   xor static_lock_3 (N19_locked, N19, ~static_TK[3]);
   xor dynamic_lock (N11_locked, N11, ~set);
-endmodule
-
-module top_c17_locked (
-    input N1, N2, N3, N6, N7,
-    output N22, N23,
-
-    input [3:0] static_K, dynamic_K, key,
-    input       clk, rst_n
-  );
-
-  wire set;
-  wire [3:0] static_TK;
-
-  dylock_8 dylock_inst (
-    .dynamic_K (dynamic_K),
-    .static_K (static_K),
-    .key (key),
-    .clk (clk),
-    .rst_n (rst_n),
-    .static_TK (static_TK),
-    .set (set)
-  );
-
-  c17_locked c17_locked_inst (
-    .N1 (N1), 
-    .N2 (N2),
-    .N3 (N3),
-    .N6 (N6),
-    .N7 (N7),
-    .N22 (N22),
-    .N23 (N23),
-    .set (set),       
-    .static_TK (static_TK) 
-  );
 endmodule

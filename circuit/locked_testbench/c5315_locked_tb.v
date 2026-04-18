@@ -41,9 +41,13 @@ module tb_c5315_locked();
     #10 rst_n = 1;
     $fdisplay(file_handle, "%5t | %b_%b | %b | %b", $time, insert_key_static, insert_key_dynamic, all_inputs, all_outputs);
 
-    // key benar
+        // key benar
     // static = 4'b1001;
     // dynamic 12'b_1011_0001_0110;
+
+    // key salah
+    // static = 4'b1011
+    // dynamic = 12'b_1101_0111_100
 
     insert_key_static = 4'b1001;
     insert_key_dynamic = 12'b_1011_0001_0110;
